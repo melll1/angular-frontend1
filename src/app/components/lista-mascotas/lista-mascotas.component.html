@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Lista de Mascotas</h2>
+
+  
+  <!-- 🔘 Botón para ir al registro -->
+  <button *ngIf="role === 'veterinario'" class="btn teal" (click)="irARegistro()">➕ Añadir Mascota</button>
+  
+  <!-- 🔍 Input de búsqueda -->
+<div style="text-align: right; margin-bottom: 10px;">
+  <input
+    type="text"
+    placeholder="Buscar por nombre, dueño o correo"
+    [(ngModel)]="terminoBusqueda"
+    (input)="filtrarMascotas()"
+    style="padding: 5px; width: 300px;"
+  />
+</div>
+
+<!-- 🏠 Ícono de casita usando Material Icons -->
+  <button
+    style="border: none; background: none; cursor: pointer; font-size: 24px;"
+    (click)="irAlPerfil()"
+    title="Ir a perfil"
+  >
+    <span class="material-icons">home</span>
+  </button>
+
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Especie</th>
+        <th>Raza</th>
+        <th>Edad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Iteramos sobre la lista de mascotas -->
+      <tr *ngFor="let mascota of mascotas">
+        <td>{{ mascota.id }}</td>
+        <td>{{ mascota.nombre }}</td>
+        <td>{{ mascota.especie }}</td>
+        <td>{{ mascota.raza }}</td>
+        <td>{{ mascota.edad }}</td>
+         <button (click)="verHistorial(mascota.id)">Ver Historial</button>
+        <td>
+          <button (click)="iniciarEdicion(mascota)">Editar</button>
+          <button *ngIf="role === 'veterinario'" class="btn btn-danger btn-sm" (click)="eliminarMascota(mascota.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="modoEdicion" style="margin-top: 20px;">
+  <h3>Editar Mascota</h3>
+  <form (ngSubmit)="guardarCambios()">
+    <label>
+      Nombre:
+      <input [(ngModel)]="mascotaSeleccionada.nombre" name="nombre" required />
+    </label>
+    <label>
+      Edad:
+      <input [(ngModel)]="mascotaSeleccionada.edad" name="edad" required type="number" />
+    </label>
+
+    <label for="foto">📷 Foto:</label>
+<input type="file" (change)="onFileSelected($event)" accept="image/*">
+
+    <!-- Agrega más campos según tu modelo -->
+    <button type="submit">Guardar</button>
+    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+  </form>
+
+  
+</div>
+
+</div>

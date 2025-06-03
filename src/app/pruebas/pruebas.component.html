@@ -1,0 +1,85 @@
+<div class="container">
+    <div class="content">
+
+
+        <div class="container login-child z-depth-3">
+
+            <!-- Tabs -->
+            <ul class="tabs tabs-fixed-width" #tabsElement>
+                <li class="tab col s6"><a class="active" href="#login-tab">INICIAR SESIÓN</a></li>
+                <li class="tab col s6"><a href="#signup-tab">CREAR CUENTA</a></li>
+            </ul>
+
+            <!-- LOGIN TAB -->
+            <div id="login-tab" class="col s12 white login-content no-selectable">
+                <form (submit)="onLogin()" #loginForm="ngForm">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">mail</i>
+                            <input id="login_email" name="email" type="email" [(ngModel)]="loginEmail" required email
+                                class="validate" />
+                            <label for="login_email">Correo electrónico</label>
+                            <span class="helper-text" data-error="Email inválido"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">vpn_key</i>
+                            <input id="login_password" name="password" type="password" [(ngModel)]="loginPassword"
+                                required class="validate" />
+                            <label for="login_password">Contraseña</label>
+                        </div>
+                    </div>
+
+                    <div class="row center-align">
+                        <button type="submit">
+                            INGRESAR <i class="material-icons right">keyboard_arrow_right</i>
+                        </button>
+                    </div>
+
+                    <div class="row center-align">
+                        <a href="#">¿Olvidaste tu contraseña?</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SIGNUP TAB -->
+            <div id="signup-tab" class="col s12 white login-content no-selectable">
+                <form (submit)="onRegister()" #registerForm="ngForm">
+                    <div class="row">
+                        Gracias por visitarnos, por favor llena el siguiente formulario:
+                    </div>
+
+                    <div class="row" *ngFor="let field of [
+                { label: 'Nombre', icon: 'person', model: 'signupNombre' },
+                { label: 'Apellido', icon: 'person_outline', model: 'signupApellido' },
+                { label: 'Correo electrónico', icon: 'mail', model: 'signupEmail', type: 'email' },
+                { label: 'Contraseña', icon: 'vpn_key', model: 'signupPassword', type: 'password' },
+                { label: 'Repetir contraseña', icon: 'vpn_key', model: 'signupPasswordConfirm', type: 'password' }
+              ]; let i = index">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">{{ field.icon }}</i>
+                            <input [id]="'signup_' + i" [type]="field.type || 'text'" [(ngModel)]="this[field.model]"
+                                [name]="field.model" required />
+                            <label [for]="'signup_' + i">{{ field.label }}</label>
+                        </div>
+                    </div>
+
+                    <div class="row center-align">
+                        <button type="submit">
+                            REGISTRAR <i class="material-icons right">keyboard_arrow_right</i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+
+
+        </div>
+
+
+
+
+    </div>
+</div>

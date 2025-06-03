@@ -1,0 +1,78 @@
+<h3>Registrar Vacuna</h3>
+
+<!-- Formulario para crear o actualizar una vacuna -->
+<form (ngSubmit)="guardarVacuna()">
+
+  <!-- 📌 Campo: Nombre de la vacuna -->
+  <div>
+    <label for="nombre">Nombre de la vacuna:</label>
+    <input type="text" id="nombre" [(ngModel)]="nuevaVacuna.nombre" name="nombre" required>
+  </div>
+
+  <!-- 📆 Fecha de aplicación -->
+  <div>
+    <label for="fecha_aplicacion">Fecha de aplicación:</label>
+    <input type="date" id="fecha_aplicacion" [(ngModel)]="nuevaVacuna.fecha_aplicacion" name="fecha_aplicacion" required>
+  </div>
+
+  <!-- 📅 Campo: Próxima dosis (equivale al campo `proxima_dosis` en la BD) -->
+  <div>
+    <label for="proxima_dosis">Próxima dosis:</label>
+    <input type="date" id="proxima_dosis" [(ngModel)]="nuevaVacuna.proxima_dosis" name="proxima_dosis">
+  </div>
+
+  <!-- 🔢 Campo: Lote de la vacuna -->
+  <div>
+    <label for="lote">Lote:</label>
+    <input type="text" id="lote" [(ngModel)]="nuevaVacuna.lote" name="lote">
+  </div>
+
+  <!-- 📝 Campo: Observaciones adicionales -->
+  <div>
+    <label for="observaciones">Observaciones:</label>
+    <textarea id="observaciones" [(ngModel)]="nuevaVacuna.observaciones" name="observaciones"></textarea>
+  </div>
+
+ <!-- 🐾 ID de la mascota -->
+  <div>
+    <label for="mascota_id">ID de la mascota:</label>
+    <input
+      type="text"
+      id="mascota_id"
+      [(ngModel)]="nuevaVacuna.mascota_id"
+      name="mascota_id"
+      [readonly]="desdeHistorial"
+      required
+    >
+  </div>
+  <div *ngIf="desdeHistorial" style="font-style: italic; color: gray;">
+    * Campo bloqueado porque vienes desde historial médico.
+  </div>
+
+
+  <!-- 💾 Botón para guardar -->
+  <button class="btn teal" type="submit">{{ modoEdicion ? 'Actualizar Vacuna' : 'Guardar Vacuna' }}</button>
+  
+  <!-- ❌ Botón para cancelar edición -->
+  <button *ngIf="modoEdicion" type="button" (click)="cancelarEdicion()">Cancelar</button>
+</form>
+
+<!-- 📋 Lista de vacunas registradas -->
+<h3>Vacunas Registradas</h3>
+<ul>
+  <li *ngFor="let vacuna of vacunas">
+    📅 <strong>{{ vacuna.fecha_aplicacion }}</strong> - 💉 {{ vacuna.nombre }}
+    (Mascota ID: {{ vacuna.mascota_id }})
+
+    <!-- Mostrar detalles adicionales solo si existen -->
+    <div *ngIf="vacuna.proxima_dosis">📆 Próxima dosis: {{ vacuna.proxima_dosis }}</div>
+    <div *ngIf="vacuna.lote">🔢 Lote: {{ vacuna.lote }}</div>
+    <div *ngIf="vacuna.observaciones">📝 Observaciones: {{ vacuna.observaciones }}</div>
+
+    <!-- ✏️ Botón editar -->
+    <button (click)="editarVacuna(vacuna)">✏️ Editar</button>
+
+    <!-- 🗑️ Botón eliminar -->
+    <button class="btn red" (click)="eliminarVacuna(vacuna.id)">🗑 Eliminar</button>
+  </li>
+</ul>

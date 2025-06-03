@@ -1,0 +1,75 @@
+<div class="container">
+  <h3>Desparasitaciones</h3>
+
+  <!-- Formulario -->
+  <div class="card-panel">
+    <form (ngSubmit)="guardarDesparasitacion()">
+      <div class="input-field">
+        <input [(ngModel)]="nuevaDesparasitacion.nombre" name="nombre" id="nombre" type="text" required>
+        <label for="nombre" class="active">Nombre del producto</label>
+      </div>
+
+      <div class="input-field">
+        <input [(ngModel)]="nuevaDesparasitacion.fecha_aplicacion" name="fecha_aplicacion" id="fecha_aplicacion" type="date" required>
+        <label for="fecha_aplicacion" class="active">Fecha de aplicación</label>
+      </div>
+
+      <div class="input-field">
+        <input [(ngModel)]="nuevaDesparasitacion.proxima_dosis" name="proxima_dosis" id="proxima_dosis" type="date">
+        <label for="proxima_dosis" class="active">Próxima dosis (opcional)</label>
+      </div>
+
+      <div class="input-field">
+        <select [(ngModel)]="nuevaDesparasitacion.tipo" name="tipo" required>
+          <option value="" disabled>Selecciona el tipo</option>
+          <option value="Interna">Interna</option>
+          <option value="Externa">Externa</option>
+        </select>
+        <label>Tipo de desparasitación</label>
+      </div>
+
+      <input type="hidden" [(ngModel)]="nuevaDesparasitacion.mascota_id" name="mascota_id">
+
+      <div class="input-field">
+        <textarea [(ngModel)]="nuevaDesparasitacion.observaciones" name="observaciones" id="observaciones" class="materialize-textarea"></textarea>
+        <label for="observaciones" class="active">Observaciones</label>
+      </div>
+
+      <button class="btn waves-effect waves-light" type="submit">
+        {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+      </button>
+      <button *ngIf="modoEdicion" class="btn-flat" type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  </div>
+
+  <!-- Tabla de registros -->
+  <table class="striped responsive-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Próxima</th>
+        <th>Tipo</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of desparasitaciones">
+        <td>{{ d.nombre }}</td>
+        <td>{{ d.fecha_aplicacion }}</td>
+        <td>{{ d.proxima_dosis || '-' }}</td>
+        <td>{{ d.tipo }}</td>
+        <td>{{ d.observaciones || '-' }}</td>
+        <td>
+          <button class="btn-flat" (click)="editarDesparasitacion(d)">
+            <i class="material-icons">edit</i>
+          </button>
+          <button class="btn-flat red-text" (click)="eliminarDesparasitacion(d.id)">
+            <i class="material-icons">delete</i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

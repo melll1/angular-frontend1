@@ -1,0 +1,31 @@
+<h2>Iniciar Sesión</h2>
+
+<form (ngSubmit)="onLogin()" #form="ngForm">
+
+  <!-- Email -->
+  <input 
+    type="email" 
+    name="email" 
+    [(ngModel)]="email" 
+    placeholder="Email" 
+    required
+  />
+  <div *ngIf="errors.email" style="color:red">{{ errors.email }}</div>
+  <br>
+
+  <!-- Contraseña -->
+  <input 
+    type="password" 
+    name="password" 
+    [(ngModel)]="password" 
+    placeholder="Contraseña" 
+    required
+  />
+  <div *ngIf="errors.password" style="color:red">{{ errors.password }}</div>
+  <br>
+
+  <button type="submit">Entrar</button>
+</form>
+
+<a routerLink="/register">Registrarse</a> |
+<a routerLink="/reset-password">¿Olvidaste tu contraseña?</a>

@@ -1,0 +1,97 @@
+<!-- 🏷️ Título principal dinámico -->
+<h3 *ngIf="role === 'dueno'">Historial de {{ nombreMascota }}</h3>
+<h3 *ngIf="role !== 'dueno'">{{ modoEdicion ? 'Editar Historial' : 'Historial' }}</h3>
+<button class="btn teal" *ngIf="role !== 'dueno'" (click)="toggleFormulario()">
+  {{ mostrarFormulario ? 'Ocultar Formulario' : 'Nuevo Historial' }}
+</button>
+
+
+<form *ngIf="role !== 'dueno' && mostrarFormulario" (ngSubmit)="guardarHistorial()">
+
+  <div>
+    <label>ID de Mascota:</label>
+    <input type="text" [(ngModel)]="nuevoHistorial.mascota_id" name="mascota_id" [readonly]="modoEdicion" required>
+  </div>
+  <div>
+  <label>
+    {{ nuevoHistorial.tipo === 'Vacuna' ? 'Nombre de la Vacuna:' : 
+       nuevoHistorial.tipo === 'Desparasitación' ? 'Tipo de Desparasitación:' : 
+       'Descripción:' }}
+  </label>
+
+  <!-- Select SOLO para desparasitación -->
+  <select
+    *ngIf="nuevoHistorial.tipo === 'Desparasitación'"
+    [(ngModel)]="nuevoHistorial.descripcion"
+    name="descripcion"
+    class="browser-default"
+    required>
+    <option value="" disabled selected>Selecciona tipo</option>
+    <option value="Interna">Interna</option>
+    <option value="Externa">Externa</option>
+  </select>
+
+  <!-- Textarea para los demás -->
+  <textarea
+    *ngIf="nuevoHistorial.tipo !== 'Desparasitación'"
+    [(ngModel)]="nuevoHistorial.descripcion"
+    name="descripcion"
+    [placeholder]="nuevoHistorial.tipo === 'Vacuna' ? 'Nombre vacuna' : 'Descripción del evento'"
+    required>
+  </textarea>
+</div>
+
+  <div>
+    <label>Fecha:</label>
+    <input type="date" [(ngModel)]="nuevoHistorial.fecha" name="fecha" required>
+  </div>
+  <div>
+    <label for="tipo">Tipo:</label>
+    <select id="tipo" [(ngModel)]="nuevoHistorial.tipo" name="tipo" required>
+      
+      <option value="Visita al veterinario">Visita al veterinario</option>
+      <option value="Diagnóstico">Diagnóstico</option>
+      <option value="Tratamiento">Tratamiento</option>
+      <option value="Vacuna">Vacuna</option>
+      <option value="Desparasitación">Desparasitación</option>
+    </select>
+  </div>
+
+  <button *ngIf="role !== 'dueno'" type="submit">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+  <button type="button" *ngIf="modoEdicion" (click)="cancelarEdicion()">Cancelar</button>
+</form>
+<!-- 🔍 Filtros -->
+<div>
+  <h6>Filtrar historial médico</h6>
+  <label *ngIf="role !== 'dueno'" for="filtroMascota">Filtrar por Mascota ID:</label>
+  <input type="text" id="filtroMascota" [(ngModel)]="filtroMascota" (input)="aplicarFiltros()">
+</div>
+
+<div>
+  <label for="filtroTipo">Filtrar por Tipo:</label>
+  <input type="text" id="filtroTipo" [(ngModel)]="filtroTipo" (input)="aplicarFiltros()">
+</div>
+
+
+<!-- 🧾 Lista de historiales médicos -->
+<div *ngIf="historiales.length > 0">
+  <h3>Registros existentes:</h3>
+  <ul>
+    <li *ngFor="let historial of historialesFiltrados">
+  📅 <strong>{{ historial.fecha }}</strong> - {{ historial.descripcion }}
+  <span *ngIf="role === 'dueno'"> (Mascota: {{ historial.mascota?.nombre || historial.mascota_id }})</span>
+  <span *ngIf="role !== 'dueno'"> (Mascota ID: {{ historial.mascota_id }})</span>
+
+  <!-- Botones visibles solo al veterinario -->
+  <button *ngIf="role !== 'dueno'" (click)="editarHistorial(historial)">✏️ Editar</button>
+  
+</li>
+  </ul>
+</div>
+
+
+<button class="btn grey" type="button" (click)="volver()">Volver</button>
+<!-- 🟡 Mensaje si no hay registros -->
+<div *ngIf="historiales.length === 0">
+  <p>No hay registros médicos aún.</p>
+</div>

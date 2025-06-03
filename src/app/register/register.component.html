@@ -1,0 +1,91 @@
+<h2>Registro</h2>
+
+<form (ngSubmit)="onRegister()" #form="ngForm">
+
+  <!-- angular: Campo para ingresar el nombre, enlazado a la propiedad 'name' del componente -->
+  <input
+    type="text"
+    name="name"
+    [(ngModel)]="name"
+    placeholder="Nombre"
+    required
+    
+  />
+  <!-- angular: Muestra error si la validación del nombre falla -->
+  <div *ngIf="errors.name" style="color: red">{{ errors.name }}</div>
+  <br />
+
+  <!-- angular: Campo para ingresar el email, enlazado a 'email' -->
+  <input
+    type="email"
+    name="email"
+    [(ngModel)]="email"
+    placeholder="Email"
+    required
+    
+  />
+  <!-- angular: Muestra error si la validación del email falla -->
+  <div *ngIf="errors.email" style="color: red">{{ errors.email }}</div>
+  <br />
+
+  <!-- angular: Campo para ingresar la contraseña, enlazado a 'password' -->
+<input
+  type="password"
+  name="password"
+  [(ngModel)]="password"
+  placeholder="Contraseña"
+  required
+/>
+<!-- angular: Muestra error si la validación de la contraseña falla -->
+<div *ngIf="errors.password" style="color: red">{{ errors.password }}</div>
+<br />
+
+  <!-- angular: Campo para repetir contraseña, enlazado a 'password_confirmation' -->
+  <input
+    type="password"
+    name="password_confirmation"
+    [(ngModel)]="password_confirmation"
+    placeholder="Repetir Contraseña"
+    required
+    
+  />
+  <!-- angular: Muestra error si la confirmación de contraseña falla -->
+  <div *ngIf="errors.password_confirmation" style="color: red">{{ errors.password_confirmation }}</div>
+  <br />
+
+  <!-- angular: Campo para ingresar teléfono, enlazado a 'telefono' -->
+  <input
+    type="text"
+    name="telefono"
+    [(ngModel)]="telefono"
+    placeholder="Teléfono"
+    required
+    
+  />
+  <!-- angular: Muestra error si la validación del teléfono falla -->
+  <div *ngIf="errors.telefono" style="color: red">{{ errors.telefono }}</div>
+  <br />
+
+  <!-- angular: Select para elegir rol, con enlace bidireccional a 'role' -->
+   
+<!-- Materialize select -->
+
+  <select [(ngModel)]="role" name="role" required>
+    <option value="" disabled selected>Selecciona un rol</option>
+    <option value="veterinario">Veterinario</option>
+    <option value="dueno">Dueño</option>
+    <option value="paseador">Paseador</option>
+  </select>
+  
+
+<div *ngIf="errors.role" style="color: red">{{ errors.role }}</div>
+
+  <br />
+  <!-- angular: Botón para enviar el formulario -->
+  <button type="submit" class="full-width btn-submit">Registrarse</button>
+</form>
+
+<!-- angular: Link para ir a la página de login -->
+<a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+
+  

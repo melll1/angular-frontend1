@@ -1,0 +1,65 @@
+<h1> Bienvenido, {{ usuario.name }}</h1>
+
+  <p><span class="material-icons">email</span> <strong>Correo:</strong> {{ usuario.email }}</p>
+  <p><span class="material-icons">badge</span> <strong>Rol:</strong> {{ usuario.role }}</p>
+
+  <div *ngIf="usuario.role === 'veterinario'">
+    <p><span class="material-icons">pets</span> Perfil de Veterinario: puedes gestionar pacientes.</p>
+    <button class="btn teal" (click)="irARegistro()">
+      ➕Registrar Mascota
+    </button>
+    <p></p>
+    <button class="btn teal" (click)="historialMedico()">
+      <span class="material-icons">format_list_bulleted</span> Historial Medico
+    </button>
+    
+  </div>
+
+ <!-- 🐕 DUEÑO -->
+<div *ngIf="usuario.role === 'dueno'">
+  <p><span class="material-icons">pets</span> Eres dueño de mascota. Puedes gestionar tus mascotas.</p>
+
+  <!-- Mostrar tarjetas si hay mascotas -->
+  <div *ngIf="(mascotas?.length ?? 0) > 0">
+    <div class="tarjetas-mascotas">
+      <mat-card class="tarjeta-mascota" *ngFor="let mascota of mascotas">
+  <div class="contenido-tarjeta">
+    <img mat-card-avatar [src]="obtenerUrlImagen(mascota.foto)" alt="Foto mascota" class="mascota-avatar" />
+    <div>
+      <h5>{{ mascota.nombre }}</h5>
+      <button mat-button color="primary" (click)="toggleDetalles(mascota)">
+        {{ mascota.mostrarDetalles ? 'Ocultar' : 'Ver detalles' }}
+      </button>
+    </div>
+    
+  </div>
+
+  <mat-card-content *ngIf="mascota.mostrarDetalles">
+    <p><strong>Especie:</strong> {{ mascota.especie }}</p>
+    <p><strong>Raza:</strong> {{ mascota.raza || 'No definida' }}</p>
+    <p><strong>Edad:</strong> {{ mascota.edad || 'Desconocida' }}</p>
+    <p><strong>Color:</strong> {{ mascota.color || 'N/A' }}</p>
+    <p><strong>Sexo:</strong> {{ mascota.sexo || 'N/A' }}</p>
+    <p><strong>Esterilizado:</strong> {{ mascota.esterilizado || 'N/A' }}</p>
+    <p><strong>Microchip:</strong> {{ mascota.microchip || 'N/A' }}</p>
+    <p><strong>Nacimiento:</strong> {{ mascota.fecha_nacimiento || 'No registrada' }}</p>
+  </mat-card-content>
+</mat-card>
+
+    </div>
+  </div>
+</div>
+
+<!-- 🐾 PASEADOR -->
+<div *ngIf="usuario.role === 'paseador'">
+  <p><span class="material-icons">favorite</span> Bienvenido cliente. Aquí puedes ver tus mascotas.</p>
+</div>
+
+<!-- 🔓 Cerrar sesión -->
+<br />
+<button class="btn red darken-1" (click)="onLogout()">
+  <span class="material-icons left">logout</span> Cerrar sesión
+</button>
+<button class="btn teal" (click)="irALista()">
+      <span class="material-icons">format_list_bulleted</span> Lista de Mascotas
+    </button>

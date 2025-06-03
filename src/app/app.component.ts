@@ -3,8 +3,9 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
+  standalone: true, // Es un componente standalone
+  imports: [RouterOutlet], // Importamos RouterOutlet para que funcione el enrutamiento
+  templateUrl: './app.component.html', // Plantilla HTML que usará este componente
   styleUrl: './app.component.css'
 })
 export class AppComponent {
