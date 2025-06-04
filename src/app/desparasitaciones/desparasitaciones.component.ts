@@ -61,7 +61,7 @@ export class DesparasitacionesComponent implements OnInit, AfterViewInit {
       this.desdeHistorial = true;
     } else if (params['mascota_id'] && params['fecha_aplicacion'] && params['tipo']) {
         this.nuevaDesparasitacion = {
-          nombre: `Desparasitante ${params['tipo']}`,
+          nombre: '',
           fecha_aplicacion: params['fecha_aplicacion'],
           proxima_dosis: '',
           tipo: params['tipo'],

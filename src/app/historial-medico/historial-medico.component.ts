@@ -91,13 +91,34 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
           mascota_id: historial.mascota_id
         }
       });
+    } else if (historial.tipo === 'Tratamiento') {
+      this.router.navigate(['/tratamientos'], {
+        queryParams: {
+          editar: true,
+          id: historial.tratamiento_id,
+          mascota_id: historial.mascota_id,
+          fecha_inicio: historial.fecha,
+          descripcion: historial.descripcion.replace('Tratamiento: ', '')
+        }
+      });
+    }
+    else if (historial.tipo === 'Desparasitación') {
+      this.router.navigate(['/desparasitaciones'], {
+        queryParams: {
+          editar: true,
+          
+          nombre: historial.descripcion.replace('Desparasitación interna: ', '').replace('Desparasitación externa: ', ''),
+          fecha_aplicacion: historial.fecha,
+          mascota_id: historial.mascota_id
+        }
+      });
     } else {
       this.modoEdicion = true;
       this.idEditando = historial.id;
       this.nuevoHistorial = { ...historial };
     }
   }
-
+  
   cancelarEdicion(): void {
     this.modoEdicion = false;
     this.idEditando = null;
@@ -105,7 +126,10 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
   }
 
   guardarHistorial(): void {
-    if (this.nuevoHistorial.tipo === 'Vacuna') {
+    // 🔠 Normalizar tipos
+    const tipoNormalizado = this.nuevoHistorial.tipo?.toLowerCase();
+  
+    if (tipoNormalizado === 'vacuna') {
       if (this.modoEdicion && this.idEditando) {
         this.vacunaService.obtenerHistorialPorVacuna(this.idEditando).subscribe({
           next: (historial: any) => {
@@ -143,8 +167,8 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       }
       return;
     }
-
-    if (this.nuevoHistorial.tipo === 'Desparasitación') {
+  
+    if (tipoNormalizado === 'desparasitación' || tipoNormalizado === 'desparasitacion') {
       this.router.navigate(['/desparasitaciones'], {
         queryParams: {
           mascota_id: this.nuevoHistorial.mascota_id,
@@ -154,7 +178,30 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       });
       return;
     }
-
+  
+    if (tipoNormalizado === 'tratamiento') {
+      this.router.navigate(['/tratamientos'], {
+        queryParams: {
+          mascota_id: this.nuevoHistorial.mascota_id,
+          fecha_inicio: this.nuevoHistorial.fecha,
+          descripcion: this.nuevoHistorial.descripcion
+        }
+      });
+      return;
+    }
+  
+    if (tipoNormalizado === 'diagnóstico' || tipoNormalizado === 'diagnostico') {
+      this.router.navigate(['/diagnosticos'], {
+        queryParams: {
+          mascota_id: this.nuevoHistorial.mascota_id,
+          fecha: this.nuevoHistorial.fecha,
+          descripcion: this.nuevoHistorial.descripcion
+        }
+      });
+      return;
+    }
+  
+    // Si no es ninguno de los anteriores, guardar como historial simple
     if (this.modoEdicion && this.idEditando) {
       this.historialService.actualizarHistorial(this.idEditando, this.nuevoHistorial).subscribe({
         next: () => {
@@ -175,6 +222,7 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       });
     }
   }
+  
 
   cargarHistoriales(): void {
     this.obtenerHistoriales();

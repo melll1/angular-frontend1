@@ -1,0 +1,51 @@
+<div class="container">
+    <h4>Diagnósticos Médicos</h4>
+  
+    <form (ngSubmit)="guardarDiagnostico()">
+      <div class="input-field">
+        <input type="text" id="nombre" [(ngModel)]="nuevoDiagnostico.nombre" name="nombre" required>
+        <label for="nombre" class="active">Nombre</label>
+      </div>
+  
+      <div class="input-field">
+        <textarea id="descripcion" class="materialize-textarea" [(ngModel)]="nuevoDiagnostico.descripcion" name="descripcion"></textarea>
+        <label for="descripcion" class="active">Descripción</label>
+      </div>
+  
+      <div class="input-field">
+        <input type="date" id="fecha" [(ngModel)]="nuevoDiagnostico.fecha" name="fecha" required>
+        <label for="fecha" class="active">Fecha</label>
+      </div>
+  
+      <button class="btn waves-effect waves-light" type="submit">
+        {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+      </button>
+  
+      <button *ngIf="modoEdicion" class="btn grey" type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  
+    <table class="highlight responsive-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Fecha</th>
+          <th>Mascota</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let diag of diagnosticos">
+          <td>{{ diag.nombre }}</td>
+          <td>{{ diag.descripcion }}</td>
+          <td>{{ diag.fecha }}</td>
+          <td>{{ diag.mascota?.nombre || diag.mascota_id }}</td>
+          <td>
+            <button class="btn-small yellow darken-2" (click)="editarDiagnostico(diag)">Editar</button>
+            <button class="btn-small red" (click)="eliminarDiagnostico(diag.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

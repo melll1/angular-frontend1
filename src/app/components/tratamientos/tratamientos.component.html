@@ -1,0 +1,45 @@
+<div class="container">
+    <h4>Tratamientos</h4>
+  
+    <form (ngSubmit)="guardarTratamiento()" #form="ngForm">
+      <div class="input-field">
+        <input id="nombre" name="nombre" [(ngModel)]="nuevoTratamiento.nombre" required />
+        <label for="nombre" class="active">Nombre del tratamiento</label>
+      </div>
+  
+      <div class="input-field">
+        <input id="fecha_inicio" type="date" name="fecha_inicio" [(ngModel)]="nuevoTratamiento.fecha_inicio" required />
+        <label for="fecha_inicio" class="active">Fecha de inicio</label>
+      </div>
+  
+      <div class="input-field">
+        <input id="fecha_fin" type="date" name="fecha_fin" [(ngModel)]="nuevoTratamiento.fecha_fin" />
+        <label for="fecha_fin" class="active">Fecha de fin</label>
+      </div>
+  
+      <div class="input-field">
+        <textarea id="descripcion" name="descripcion" class="materialize-textarea" [(ngModel)]="nuevoTratamiento.descripcion"></textarea>
+        <label for="descripcion" class="active">Descripción</label>
+      </div>
+  
+      <div class="input-field">
+        <textarea id="observaciones" name="observaciones" class="materialize-textarea" [(ngModel)]="nuevoTratamiento.observaciones"></textarea>
+        <label for="observaciones" class="active">Observaciones</label>
+      </div>
+  
+      <button class="btn" type="submit">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+      <button *ngIf="modoEdicion" class="btn red" type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  
+    <h5 class="mt-4">Listado de Tratamientos</h5>
+    <ul class="collection">
+      <li *ngFor="let t of tratamientos" class="collection-item">
+        <div>
+          <strong>{{ t.nombre }}</strong> - {{ t.fecha_inicio }}
+          <a class="secondary-content" (click)="editarTratamiento(t)"><i class="material-icons">edit</i></a>
+          <a class="secondary-content red-text" (click)="eliminarTratamiento(t.id)" style="margin-right: 25px;"><i class="material-icons">delete</i></a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  

@@ -7,6 +7,7 @@ import { PerfilesComponent } from './perfiles/perfiles.component';
 import { HistorialMedicoComponent } from './historial-medico/historial-medico.component';
 import { VacunasComponent } from './vacunas/vacunas.component';
 import { DesparasitacionesComponent } from './desparasitaciones/desparasitaciones.component';
+import { DiagnosticosComponent } from './components/diagnosticos.component';
 
 
 export const appRoutes: Routes = [
@@ -34,5 +35,10 @@ export const appRoutes: Routes = [
 { path: 'vacunas', loadComponent: () => import('./vacunas/vacunas.component').then(m => m.VacunasComponent) },/** Agregado para http://localhost:4200/vacunas */
 
 { path: 'desparasitaciones', loadComponent: () => import('./desparasitaciones/desparasitaciones.component').then(m => m.DesparasitacionesComponent) },/** Agregado para http://localhost:4200/desparasitaciones */
+
+{ path: 'tratamientos', loadComponent: () => import('./components/tratamientos/tratamientos.component').then(m => m.TratamientosComponent) },
+
+{ path: 'diagnosticos', loadComponent: () => import ('./components/tratamientos/tratamientos.component').then(m => m.TratamientosComponent)},
+
 
 ];
