@@ -84,7 +84,8 @@
 
   <!-- Botones visibles solo al veterinario -->
   <button *ngIf="role !== 'dueno'" (click)="editarHistorial(historial)">✏️ Editar</button>
-  
+   <button *ngIf="role !== 'dueno' && historial.tipo === 'Visita al veterinario'" (click)="eliminarHistorial(historial.id)">🗑️ Eliminar</button>
+
 </li>
   </ul>
 </div>

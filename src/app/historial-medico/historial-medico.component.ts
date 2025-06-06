@@ -202,7 +202,7 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       return;
     }
   
-   if (tipoNormalizado === 'Diagnostico') {
+   if (tipoNormalizado === 'diagnostico') {
   this.router.navigate(['/diagnosticos'], {
     queryParams: {
       mascota_id: this.nuevoHistorial.mascota_id,
@@ -211,7 +211,30 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
     }
   });
   return;
+}if (tipoNormalizado === 'visita al veterinario') {
+  if (this.modoEdicion && this.idEditando) {
+    this.historialService.actualizarHistorial(this.idEditando, this.nuevoHistorial).subscribe({
+      next: () => {
+        this.cargarHistoriales();
+        this.cancelarEdicion();
+        alert('Visita actualizada.');
+      },
+      error: () => alert('Error al actualizar la visita.')
+    });
+  } else {
+    this.historialService.crearHistorial(this.nuevoHistorial).subscribe({
+      next: (res: any) => {
+        this.historiales.push(res.registro);
+        this.nuevoHistorial = { mascota_id: '', descripcion: '', fecha: '', tipo: '' };
+        this.aplicarFiltros();
+        alert('Visita guardada.');
+      },
+      error: () => alert('Error al guardar la visita.')
+    });
+  }
+  return; // importante: evita que siga a otras condiciones
 }
+
 
     // Si no es ninguno de los anteriores, guardar como historial simple
     if (this.modoEdicion && this.idEditando) {
@@ -270,4 +293,18 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
   volver(): void {
     this.router.navigate(['/lista-mascotas']);
   }
+
+  eliminarHistorial(id: number): void {
+  if (confirm('¿Eliminar esta visita?')) {
+    this.historialService.eliminarHistorial(id).subscribe({
+      next: () => {
+        this.historiales = this.historiales.filter(h => h.id !== id);
+        this.aplicarFiltros();
+        alert('Visita eliminada.');
+      },
+      error: () => alert('Error al eliminar la visita.')
+    });
+  }
+}
+
 }

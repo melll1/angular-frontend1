@@ -38,12 +38,18 @@ obtenerHistoriales(): Observable<any> {
     });
   }
 
+
   // ✏️ Editar un historial médico existente
  actualizarHistorial(id: number, data: any): Observable<any> {
   return this.http.put(`http://localhost:8000/api/historial/${id}`, data, {
     headers: this.getAuthHeaders()
   });
 }
-
+ // ❌ Eliminar historial
+  eliminarHistorial(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
   
 }
