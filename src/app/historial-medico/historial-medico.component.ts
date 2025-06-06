@@ -106,13 +106,25 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       this.router.navigate(['/desparasitaciones'], {
         queryParams: {
           editar: true,
-          
+          id: historial.desparasitacion_id,
           nombre: historial.descripcion.replace('Desparasitación interna: ', '').replace('Desparasitación externa: ', ''),
           fecha_aplicacion: historial.fecha,
           mascota_id: historial.mascota_id
         }
       });
-    } else {
+    }if (historial.tipo === 'Diagnostico') {
+    this.router.navigate(['/diagnosticos'], {
+      queryParams: {
+        editar: true,
+          id: historial.diagnostico_id,
+        mascota_id: historial.mascota_id,
+        fecha: historial.fecha,
+        descripcion: historial.descripcion.replace('Diagnostico: ', '')
+      }
+    });
+    return;
+  }
+ else {
       this.modoEdicion = true;
       this.idEditando = historial.id;
       this.nuevoHistorial = { ...historial };
@@ -190,17 +202,17 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       return;
     }
   
-    if (tipoNormalizado === 'diagnóstico' || tipoNormalizado === 'diagnostico') {
-      this.router.navigate(['/diagnosticos'], {
-        queryParams: {
-          mascota_id: this.nuevoHistorial.mascota_id,
+   if (tipoNormalizado === 'Diagnostico') {
+  this.router.navigate(['/diagnosticos'], {
+    queryParams: {
+      mascota_id: this.nuevoHistorial.mascota_id,
           fecha: this.nuevoHistorial.fecha,
           descripcion: this.nuevoHistorial.descripcion
-        }
-      });
-      return;
     }
-  
+  });
+  return;
+}
+
     // Si no es ninguno de los anteriores, guardar como historial simple
     if (this.modoEdicion && this.idEditando) {
       this.historialService.actualizarHistorial(this.idEditando, this.nuevoHistorial).subscribe({

@@ -1,51 +1,36 @@
-<div class="container">
-    <h4>Diagnósticos Médicos</h4>
-  
-    <form (ngSubmit)="guardarDiagnostico()">
-      <div class="input-field">
-        <input type="text" id="nombre" [(ngModel)]="nuevoDiagnostico.nombre" name="nombre" required>
-        <label for="nombre" class="active">Nombre</label>
-      </div>
-  
-      <div class="input-field">
-        <textarea id="descripcion" class="materialize-textarea" [(ngModel)]="nuevoDiagnostico.descripcion" name="descripcion"></textarea>
-        <label for="descripcion" class="active">Descripción</label>
-      </div>
-  
-      <div class="input-field">
-        <input type="date" id="fecha" [(ngModel)]="nuevoDiagnostico.fecha" name="fecha" required>
-        <label for="fecha" class="active">Fecha</label>
-      </div>
-  
-      <button class="btn waves-effect waves-light" type="submit">
-        {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
-      </button>
-  
-      <button *ngIf="modoEdicion" class="btn grey" type="button" (click)="cancelarEdicion()">Cancelar</button>
-    </form>
-  
-    <table class="highlight responsive-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Fecha</th>
-          <th>Mascota</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let diag of diagnosticos">
-          <td>{{ diag.nombre }}</td>
-          <td>{{ diag.descripcion }}</td>
-          <td>{{ diag.fecha }}</td>
-          <td>{{ diag.mascota?.nombre || diag.mascota_id }}</td>
-          <td>
-            <button class="btn-small yellow darken-2" (click)="editarDiagnostico(diag)">Editar</button>
-            <button class="btn-small red" (click)="eliminarDiagnostico(diag.id)">Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<h4>Gestión de Diagnósticos</h4>
+
+<form (ngSubmit)="guardarDiagnostico()">
+  <div>
+    <label for="mascota_id">ID de Mascota:</label>
+    <input type="number" [(ngModel)]="nuevoDiagnostico.mascota_id" name="mascota_id" required [readonly]="desdeHistorial">
   </div>
-  
+
+  <div>
+    <label for="titulo">Título:</label>
+    <input type="text" [(ngModel)]="nuevoDiagnostico.titulo" name="titulo" required>
+  </div>
+
+  <div>
+    <label for="descripcion">Descripción:</label>
+    <textarea [(ngModel)]="nuevoDiagnostico.descripcion" name="descripcion" required></textarea>
+  </div>
+
+  <div>
+    <label for="fecha">Fecha:</label>
+    <input type="date" [(ngModel)]="nuevoDiagnostico.fecha" name="fecha" required>
+  </div>
+
+  <button type="submit">{{ modoEdicion ? 'Actualizar' : 'Guardar' }}</button>
+  <button type="button" *ngIf="modoEdicion" (click)="cancelarEdicion()">Cancelar</button>
+</form>
+
+<h5>Listado de Diagnósticos</h5>
+<ul>
+  <li *ngFor="let diagnostico of diagnosticos">
+    📅 <strong>{{ diagnostico.fecha }}</strong> - <strong>{{ diagnostico.titulo }}</strong>: {{ diagnostico.descripcion }}
+    (Mascota ID: {{ diagnostico.mascota_id }})
+    <button (click)="editarDiagnostico(diagnostico)">Editar</button>
+    <button (click)="eliminarDiagnostico(diagnostico.id)">Eliminar</button>
+  </li>
+</ul>

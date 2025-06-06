@@ -38,4 +38,8 @@ export class DiagnosticoService {
   obtenerPorMascota(mascotaId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/mascota/${mascotaId}`, this.getHeaders());
   }
+
+  crearHistorial(data: any) {
+  return this.http.post('http://localhost:8000/api/historiales', data, this.getHeaders());
+}
 }

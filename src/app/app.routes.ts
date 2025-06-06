@@ -38,7 +38,7 @@ export const appRoutes: Routes = [
 
 { path: 'tratamientos', loadComponent: () => import('./components/tratamientos/tratamientos.component').then(m => m.TratamientosComponent) },
 
-{ path: 'diagnosticos', loadComponent: () => import ('./components/tratamientos/tratamientos.component').then(m => m.TratamientosComponent)},
+{ path: 'diagnosticos', loadComponent: () => import('./components/diagnosticos.component').then(m => m.DiagnosticosComponent) },/** Agregado para http://localhost:4200/diagnosticos */
 
 
 ];
