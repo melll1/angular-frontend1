@@ -1,0 +1,62 @@
+
+
+
+
+button {
+  margin: 2px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+button.btn-primary {
+  background-color: #11ebc7;
+  color: black;
+}
+
+.segundo {
+  background-color: #f39726;
+  color: black;
+}
+
+.primero {
+  background-color: #ff8a65;
+  color: black;
+}
+
+button.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+button.btn-warning {
+  background-color: #f39c12;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+input[type="text"] {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.btn.teal {
+  background-color: #11ebc7;
+  color: black;
+  border-radius: 25px;
+  font-weight: bold;
+} 
+
+#button.btn-primary {
+  background-color: #11ebc7;
+  color: black;
+}
+
+

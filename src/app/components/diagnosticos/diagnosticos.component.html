@@ -1,0 +1,69 @@
+<br>
+<h2 class="section-title">
+  <span class="material-icons">psychology</span>
+  {{ modoEdicion ? 'Editar Diagnóstico' : 'Nuevo Diagnóstico' }}
+</h2>
+<br>
+<!-- Botón para mostrar/ocultar -->
+<button class="btn teal" (click)="toggleFormulario()">
+  <span class="material-icons">note_add</span>
+  {{ mostrarFormulario ? 'Ocultar' : 'Registrar Diagnóstico' }}
+</button>
+<br>
+<br>
+<!-- Formulario -->
+<form *ngIf="mostrarFormulario" (ngSubmit)="guardarDiagnostico()" class="form-section">
+  <label>ID de Mascota:</label>
+  <input type="number" [(ngModel)]="nuevoDiagnostico.mascota_id" name="mascota_id" [readonly]="desdeHistorial" required />
+
+  <label>Título:</label>
+  <input type="text" [(ngModel)]="nuevoDiagnostico.titulo" name="titulo" required />
+
+  <label>Descripción:</label>
+  <textarea [(ngModel)]="nuevoDiagnostico.descripcion" name="descripcion" rows="2" required></textarea>
+
+  <label>Fecha:</label>
+  <input type="date" [(ngModel)]="nuevoDiagnostico.fecha" name="fecha" required />
+
+  <div class="form-buttons">
+    <button type="submit" class="btn green">
+      <span class="material-icons">save</span> {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+    </button>
+    <button *ngIf="modoEdicion" type="button" class="btn grey" (click)="cancelarEdicion()">
+      <span class="material-icons">cancel</span> Cancelar
+    </button>
+  </div>
+</form>
+
+<!-- Filtro de búsqueda -->
+<div class="filter-section">
+  <label for="filtroMascota"><span class="material-icons">search</span> Mascota ID</label>
+  <input id="filtroMascota" type="text" [(ngModel)]="filtroMascota" (input)="buscarMascotaFiltrada()" />
+
+  <!-- Mostrar si se encuentra -->
+  <div *ngIf="mascotaFiltrada">
+    <p><strong>🐾 Mascota:</strong> {{ mascotaFiltrada.nombre }}</p>
+    <p><strong>👤 Dueño:</strong> {{ mascotaFiltrada.usuario?.name || 'No disponible' }}</p>
+  </div>
+</div>
+
+<!-- Lista de diagnósticos -->
+<h3 class="section-subtitle">
+  <span class="material-icons">list_alt</span> Lista de Diagnósticos
+</h3>
+
+<ul class="collection">
+  <li *ngFor="let d of diagnosticosFiltrados" class="collection-item">
+    📅 <strong>{{ d.fecha }}</strong> - 🧪 <strong>{{ d.titulo }}</strong>: {{ d.descripcion }}
+    <span class="secondary-label">(Mascota ID: {{ d.mascota?.id || d.mascota_id }} - {{ d.mascota?.nombre || 'Sin nombre' }})</span>
+
+    <div class="secondary-actions">
+      <button class="btn blue btn-sm" (click)="editarDiagnostico(d)">
+        <span class="material-icons">edit</span>
+      </button>
+      <button class="btn red btn-sm" (click)="eliminarDiagnostico(d.id)">
+        <span class="material-icons">delete</span>
+      </button>
+    </div>
+  </li>
+</ul>

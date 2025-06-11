@@ -1,0 +1,27 @@
+<h2 class="section-title">
+  <span class="material-icons">notifications</span> Notificaciones
+</h2>
+
+<div *ngIf="notificaciones.length === 0" class="no-notifications">
+  <p><span class="material-icons">inbox</span> No tienes notificaciones pendientes.</p>
+</div>
+
+<ul class="collection" *ngIf="notificaciones.length > 0">
+  <li *ngFor="let notificacion of notificaciones" class="collection-item">
+    <div class="notification-content">
+      <div>
+        <strong class="title">{{ notificacion.tipo }}</strong>
+        <p class="message">{{ notificacion.mensaje }}</p>
+        <small class="date">📅 {{ notificacion.fecha_notificacion | date: 'short' }}</small>
+      </div>
+      <div>
+        <span *ngIf="notificacion.leido" class="badge green white-text">Leída</span>
+        <button *ngIf="!notificacion.leido"
+                class="btn btn-small blue lighten-1 white-text"
+                (click)="marcarLeida(notificacion.id)">
+          <span class="material-icons left">mark_email_read</span> Marcar como leída
+        </button>
+      </div>
+    </div>
+  </li>
+</ul>

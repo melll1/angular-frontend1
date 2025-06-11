@@ -1,10 +1,11 @@
 import { Component, OnInit , AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HistorialService } from '../services/historial.service';
+import { HistorialService } from '../../services/historial.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VacunaService } from '../services/vacuna.service';
+import { VacunaService } from '../../services/vacuna.service';
+import { MascotasService } from '../../services/mascotas.service';
 
 declare const M: any;
 
@@ -17,17 +18,25 @@ declare const M: any;
 })
 export class HistorialMedicoComponent implements OnInit, AfterViewInit {
   historiales: any[] = [];
+  mascotas: any[] = [];
+  historialesFiltrados: any[] = [];
+  mascotaFiltrada: any = null; 
+  // Datos para el nuevo historial
   nuevoHistorial: any = {
     mascota_id: '',
     descripcion: '',
     fecha: '',
-    tipo: ''
+    tipo: '',
   };
+
+  mascotaSeleccionada: any = null;
+  // Modo de edición
   modoEdicion: boolean = false;
   idEditando: number | null = null;
+
+  // Filtros y rol del usuario
   filtroMascota: string = '';
   filtroTipo: string = '';
-  historialesFiltrados: any[] = [];
   role: string = '';
   nombreMascota: string = '';
   mostrarFormulario: boolean = false;
@@ -37,6 +46,7 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private vacunaService: VacunaService,
+    private mascotaService: MascotasService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -59,6 +69,7 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
     this.role = localStorage.getItem('role') || '';
     this.nombreMascota = localStorage.getItem('nombreMascota') || '';
 
+// Cargar historial por mascota específica si se pasa ID por ruta
     this.route.paramMap.subscribe(params => {
       const mascotaId = params.get('id');
       if (mascotaId) {
@@ -66,6 +77,14 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       } else {
         this.obtenerHistoriales();
       }
+    });
+     this.cargarMascotas();
+  }
+
+  cargarMascotas(): void {
+    this.mascotaService.obtenerMascotas().subscribe({
+      next: (data) => this.mascotas = data,
+      error: () => console.error('Error al cargar mascotas')
     });
   }
 
@@ -78,6 +97,27 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       },
       error: (err) => console.error('Error al obtener historial médico:', err)
     });
+  }
+
+   obtenerHistorialPorMascota(mascotaId: number): void {
+    this.historialService.obtenerHistorialesDeMascota(mascotaId).subscribe({
+      next: (data: any) => {
+        this.historiales = data;
+        this.historialesFiltrados = data;
+        if (data.length > 0 && data[0].mascota?.nombre) {
+          this.nombreMascota = data[0].mascota.nombre;
+        }
+        this.inicializarSelect();
+      },
+      error: (err) => console.error('Error al obtener historial por mascota:', err)
+    });
+  }
+
+  aplicarFiltros(): void {
+    this.historialesFiltrados = this.historiales.filter(h =>
+      (!this.filtroMascota || h.mascota_id.toString().includes(this.filtroMascota)) &&
+      (!this.filtroTipo || h.tipo.toLowerCase().includes(this.filtroTipo.toLowerCase()))
+    );
   }
 
   editarHistorial(historial: any): void {
@@ -263,26 +303,9 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
     this.obtenerHistoriales();
   }
 
-  aplicarFiltros(): void {
-    this.historialesFiltrados = this.historiales.filter(h =>
-      (!this.filtroMascota || h.mascota_id.toString().includes(this.filtroMascota)) &&
-      (!this.filtroTipo || h.tipo.toLowerCase().includes(this.filtroTipo.toLowerCase()))
-    );
-  }
+  
 
-  obtenerHistorialPorMascota(mascotaId: number): void {
-    this.historialService.obtenerHistorialesDeMascota(mascotaId).subscribe({
-      next: (data: any) => {
-        this.historiales = data;
-        this.historialesFiltrados = data;
-        if (data.length > 0 && data[0].mascota?.nombre) {
-          this.nombreMascota = data[0].mascota.nombre;
-        }
-        this.inicializarSelect();
-      },
-      error: (err) => console.error('Error al obtener historial por mascota:', err)
-    });
-  }
+ 
 
   limpiarFiltros(): void {
     this.filtroMascota = '';
@@ -290,9 +313,6 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
     this.aplicarFiltros();
   }
 
-  volver(): void {
-    this.router.navigate(['/lista-mascotas']);
-  }
 
   eliminarHistorial(id: number): void {
   if (confirm('¿Eliminar esta visita?')) {
@@ -304,6 +324,19 @@ export class HistorialMedicoComponent implements OnInit, AfterViewInit {
       },
       error: () => alert('Error al eliminar la visita.')
     });
+  }
+}
+
+buscarMascotaPorId(id: number): void {
+  this.mascotaSeleccionada = this.mascotas.find(m => m.id === id) || null;
+}
+
+buscarMascotaFiltrada(): void {
+  const id = parseInt(this.filtroMascota, 10);
+  if (!isNaN(id)) {
+    this.mascotaFiltrada = this.mascotas.find(m => m.id === id) || null;
+  } else {
+    this.mascotaFiltrada = null;
   }
 }
 

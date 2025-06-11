@@ -1,0 +1,51 @@
+.form-section {
+  margin: 20px 0;
+}
+
+.form-section label {
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.form-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.record-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.record-list li {
+  background-color: #f7f7f7;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.action-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-sm {
+  font-size: 13px;
+  padding: 4px 10px;
+}
+
+.text-muted {
+  color: gray;
+  font-style: italic;
+  margin-top: 4px;
+}

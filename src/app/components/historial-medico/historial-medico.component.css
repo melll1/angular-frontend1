@@ -1,0 +1,45 @@
+.form-section, .filter-section {
+  margin: 20px 0;
+}
+
+.form-section label,
+.filter-section label {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.form-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.record-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.record-list li {
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 13px;
+}

@@ -12,8 +12,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./tratamientos.component.css']
 })
 export class TratamientosComponent implements OnInit {
-
   tratamientos: any[] = [];
+  tratamientosFiltrados: any[] = [];
 
   nuevoTratamiento: any = {
     nombre: '',
@@ -21,10 +21,14 @@ export class TratamientosComponent implements OnInit {
     fecha_fin: '',
     descripcion: '',
     observaciones: '',
+    frecuencia_minutos: null,
     mascota_id: ''
   };
 
-  modoEdicion: boolean = false;
+  mostrarFormulario = true;
+  filtroMascota = '';
+  mascotaFiltrada: any = null;
+  modoEdicion = false;
   idEditando: number | null = null;
 
   constructor(
@@ -46,9 +50,34 @@ export class TratamientosComponent implements OnInit {
 
   cargarTratamientos(): void {
     this.tratamientoService.obtenerTodos().subscribe({
-      next: (data: any) => this.tratamientos = data,
-      error: (err: any) => console.error('Error al cargar tratamientos', err)
+      next: (data: any) => {
+        this.tratamientos = data;
+        this.tratamientosFiltrados = data;
+        this.buscarMascotaFiltrada();
+      },
+      error: err => console.error('Error al cargar tratamientos', err)
     });
+  }
+
+  aplicarFiltros(): void {
+    this.tratamientosFiltrados = this.tratamientos.filter(t =>
+      !this.filtroMascota || t.mascota?.id.toString().includes(this.filtroMascota)
+    );
+  }
+
+  buscarMascotaFiltrada(): void {
+    const id = parseInt(this.filtroMascota, 10);
+    if (!isNaN(id)) {
+      const conMascota = this.tratamientos.find(t => t.mascota?.id === id);
+      this.mascotaFiltrada = conMascota ? conMascota.mascota : null;
+    } else {
+      this.mascotaFiltrada = null;
+    }
+    this.aplicarFiltros();
+  }
+
+  toggleFormulario(): void {
+    this.mostrarFormulario = !this.mostrarFormulario;
   }
 
   guardarTratamiento(): void {
@@ -65,14 +94,8 @@ export class TratamientosComponent implements OnInit {
       this.tratamientoService.crearTratamiento(this.nuevoTratamiento).subscribe({
         next: (res: any) => {
           this.tratamientos.push(res.tratamiento);
-          this.nuevoTratamiento = {
-            nombre: '',
-            fecha_inicio: '',
-            fecha_fin: '',
-            descripcion: '',
-            observaciones: '',
-            mascota_id: ''
-          };
+          this.tratamientosFiltrados = this.tratamientos;
+          this.cancelarEdicion();
           alert('Tratamiento registrado correctamente.');
         },
         error: () => alert('Error al registrar tratamiento.')
@@ -84,6 +107,7 @@ export class TratamientosComponent implements OnInit {
     this.modoEdicion = true;
     this.idEditando = tratamiento.id;
     this.nuevoTratamiento = { ...tratamiento };
+    if (!this.mostrarFormulario) this.toggleFormulario();
   }
 
   cancelarEdicion(): void {
@@ -95,6 +119,7 @@ export class TratamientosComponent implements OnInit {
       fecha_fin: '',
       descripcion: '',
       observaciones: '',
+      frecuencia_minutos: null,
       mascota_id: ''
     };
   }
@@ -104,9 +129,10 @@ export class TratamientosComponent implements OnInit {
       this.tratamientoService.eliminarTratamiento(id).subscribe({
         next: () => {
           this.tratamientos = this.tratamientos.filter(t => t.id !== id);
+          this.aplicarFiltros();
           alert('Tratamiento eliminado.');
         },
-        error: (err: any) => console.error('Error al eliminar:', err)
+        error: err => console.error('Error al eliminar:', err)
       });
     }
   }

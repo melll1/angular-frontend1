@@ -1,65 +1,146 @@
-<h1> Bienvenido, {{ usuario.name }}</h1>
+<h2>
+  <span class="material-icons">person</span>
+  Bienvenido, {{ usuario.name }}
+</h2>
 
-  <p><span class="material-icons">email</span> <strong>Correo:</strong> {{ usuario.email }}</p>
-  <p><span class="material-icons">badge</span> <strong>Rol:</strong> {{ usuario.role }}</p>
+<p>
+  <span class="material-icons">email</span>
+  <strong>Correo:</strong> {{ usuario.email }}
+</p>
 
-  <div *ngIf="usuario.role === 'veterinario'">
-    <p><span class="material-icons">pets</span> Perfil de Veterinario: puedes gestionar pacientes.</p>
-    <button class="btn teal" (click)="irARegistro()">
-      ➕Registrar Mascota
-    </button>
-    <p></p>
-    <button class="btn teal" (click)="historialMedico()">
-      <span class="material-icons">format_list_bulleted</span> Historial Medico
-    </button>
-    
+<p>
+  <span class="material-icons">badge</span>
+  <strong>Rol:</strong> {{ usuario.role }}
+</p>
+
+<!-- VETERINARIO -->
+<div *ngIf="usuario.role === 'veterinario'">
+  <p><span class="material-icons">medical_services</span> Perfil de Veterinario: puedes gestionar pacientes.</p>
+
+  <div class="citas-container">
+    <!-- Citas hoy -->
+    <div *ngIf="citasHoy.length > 0">
+      <h4><span class="material-icons">today</span> Citas para hoy</h4>
+      <ul>
+        <li *ngFor="let cita of citasHoy">
+          🐾 <strong>{{ cita.mascota?.nombre }}</strong> - {{ cita.motivo || 'Sin motivo' }} a las {{ cita.fecha_hora | date: 'shortTime' }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Citas mañana -->
+    <div *ngIf="citasManana.length > 0">
+      <h4><span class="material-icons">event</span> Citas para mañana</h4>
+      <ul>
+        <li *ngFor="let cita of citasManana">
+          🐾 <strong>{{ cita.mascota?.nombre }}</strong> - {{ cita.motivo || 'Sin motivo' }} a las {{ cita.fecha_hora | date: 'shortTime' }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sin citas -->
+    <div *ngIf="citasHoy.length === 0 && citasManana.length === 0">
+      <p>No tienes citas programadas para hoy ni mañana.</p>
+    </div>
   </div>
 
- <!-- 🐕 DUEÑO -->
+  <br>
+  <button class="btn teal" (click)="irARegistro()">
+    <span class="material-icons left">add</span> Registrar Mascota
+  </button>
+</div>
+
+<!-- DUEÑO -->
 <div *ngIf="usuario.role === 'dueno'">
   <p><span class="material-icons">pets</span> Eres dueño de mascota. Puedes gestionar tus mascotas.</p>
 
-  <!-- Mostrar tarjetas si hay mascotas -->
-  <div *ngIf="(mascotas?.length ?? 0) > 0">
-    <div class="tarjetas-mascotas">
-      <mat-card class="tarjeta-mascota" *ngFor="let mascota of mascotas">
-  <div class="contenido-tarjeta">
-    <img mat-card-avatar [src]="obtenerUrlImagen(mascota.foto)" alt="Foto mascota" class="mascota-avatar" />
-    <div>
-      <h5>{{ mascota.nombre }}</h5>
-      <button mat-button color="primary" (click)="toggleDetalles(mascota)">
-        {{ mascota.mostrarDetalles ? 'Ocultar' : 'Ver detalles' }}
-      </button>
-    </div>
-    
+  <div class="tarjetas-mascotas" *ngIf="mascotas.length > 0">
+    <mat-card class="tarjeta-mascota-mejorada" *ngFor="let mascota of mascotas">
+      <div class="cabecera-mascota">
+        <div class="imagen-wrapper">
+          <img
+            [src]="obtenerUrlImagen(mascota.foto)"
+            alt="Foto de mascota"
+            class="avatar-mascota"
+            style="width: 200px; height: 200px;  object-fit: contain; display: block; background-color: rgba(198, 93, 18, 0.732); border-radius: 30%;"
+          />
+        </div>
+        <div class="info-mascota">
+          <h4>{{ mascota.nombre }}</h4>
+          <button mat-button color="primary" (click)="toggleDetalles(mascota)">
+            <span class="material-icons">
+              {{ mascota.mostrarDetalles ? 'expand_less' : 'expand_more' }}
+            </span>
+            {{ mascota.mostrarDetalles ? 'Ocultar detalles' : 'Ver detalles' }}
+          </button>
+        </div>
+      </div>
+
+      <mat-card-content *ngIf="mascota.mostrarDetalles">
+        <div class="detalle-mascota-grid">
+          <div><strong>Especie:</strong> {{ mascota.especie }}</div>
+          <div><strong>Raza:</strong> {{ mascota.raza || 'No definida' }}</div>
+          <div><strong>Edad:</strong> {{ mascota.edad || 'Desconocida' }}</div>
+          <div><strong>Color:</strong> {{ mascota.color || 'N/A' }}</div>
+          <div><strong>Sexo:</strong> {{ mascota.sexo || 'N/A' }}</div>
+          <div><strong>Esterilizado:</strong> {{ mascota.esterilizado ? 'Sí' : 'No' }}</div>
+          <div><strong>Microchip:</strong> {{ mascota.microchip || 'N/A' }}</div>
+          <div><strong>Nacimiento:</strong> {{ mascota.fecha_nacimiento || 'No registrada' }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-  <mat-card-content *ngIf="mascota.mostrarDetalles">
-    <p><strong>Especie:</strong> {{ mascota.especie }}</p>
-    <p><strong>Raza:</strong> {{ mascota.raza || 'No definida' }}</p>
-    <p><strong>Edad:</strong> {{ mascota.edad || 'Desconocida' }}</p>
-    <p><strong>Color:</strong> {{ mascota.color || 'N/A' }}</p>
-    <p><strong>Sexo:</strong> {{ mascota.sexo || 'N/A' }}</p>
-    <p><strong>Esterilizado:</strong> {{ mascota.esterilizado || 'N/A' }}</p>
-    <p><strong>Microchip:</strong> {{ mascota.microchip || 'N/A' }}</p>
-    <p><strong>Nacimiento:</strong> {{ mascota.fecha_nacimiento || 'No registrada' }}</p>
-  </mat-card-content>
-</mat-card>
-
-    </div>
+  <div *ngIf="mascotas.length === 0">
+    <p>No tienes mascotas registradas actualmente.</p>
   </div>
 </div>
 
-<!-- 🐾 PASEADOR -->
+<!-- PASEADOR -->
 <div *ngIf="usuario.role === 'paseador'">
-  <p><span class="material-icons">favorite</span> Bienvenido cliente. Aquí puedes ver tus mascotas.</p>
+  <p><span class="material-icons">directions_walk</span> Bienvenido paseador. Aquí se listarán mascotas asignadas.</p>
+
+  <div class="tarjetas-mascotas" *ngIf="mascotas.length > 0">
+    <mat-card class="tarjeta-mascota-mejorada" *ngFor="let mascota of mascotas">
+      <div class="cabecera-mascota">
+        <div class="imagen-wrapper">
+          <img
+            [src]="obtenerUrlImagen(mascota.foto)"
+            alt="Foto de mascota"
+            class="avatar-mascota"
+            style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; display: block;"
+          />
+        </div>
+        <div class="info-mascota">
+          <h4>{{ mascota.nombre }}</h4>
+          <button mat-button color="primary" (click)="toggleDetalles(mascota)">
+            <span class="material-icons">
+              {{ mascota.mostrarDetalles ? 'expand_less' : 'expand_more' }}
+            </span>
+            {{ mascota.mostrarDetalles ? 'Ocultar detalles' : 'Ver detalles' }}
+          </button>
+        </div>
+      </div>
+
+      <mat-card-content *ngIf="mascota.mostrarDetalles">
+        <div class="detalle-mascota-grid">
+          <div><strong>Especie:</strong> {{ mascota.especie }}</div>
+          <div><strong>Raza:</strong> {{ mascota.raza || 'No definida' }}</div>
+          <div><strong>Edad:</strong> {{ mascota.edad || 'Desconocida' }}</div>
+          <div><strong>Color:</strong> {{ mascota.color || 'N/A' }}</div>
+          <div><strong>Sexo:</strong> {{ mascota.sexo || 'N/A' }}</div>
+          <div><strong>Esterilizado:</strong> {{ mascota.esterilizado ? 'Sí' : 'No' }}</div>
+          <div><strong>Microchip:</strong> {{ mascota.microchip || 'N/A' }}</div>
+          <div><strong>Nacimiento:</strong> {{ mascota.fecha_nacimiento || 'No registrada' }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 
-<!-- 🔓 Cerrar sesión -->
-<br />
-<button class="btn red darken-1" (click)="onLogout()">
-  <span class="material-icons left">logout</span> Cerrar sesión
-</button>
-<button class="btn teal" (click)="irALista()">
-      <span class="material-icons">format_list_bulleted</span> Lista de Mascotas
-    </button>
+<!-- Logout -->
+<div class="acciones-perfil mt-3">
+  <button class="btn red darken-1" (click)="onLogout()">
+    <span class="material-icons left">logout</span> Cerrar sesión
+  </button>
+</div>

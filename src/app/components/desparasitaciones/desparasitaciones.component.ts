@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { DesparasitacionService } from '../services/desparasitacion.service';
+import { DesparasitacionService } from '../../services/desparasitacion.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 // Materialize CSS
@@ -17,6 +17,7 @@ declare const M: any;
 })
 export class DesparasitacionesComponent implements OnInit, AfterViewInit {
   desparasitaciones: any[] = [];
+  desparasitacionesFiltradas: any[] = [];
 
   nuevaDesparasitacion: any = {
     nombre: '',
@@ -26,10 +27,13 @@ export class DesparasitacionesComponent implements OnInit, AfterViewInit {
     observaciones: '',
     mascota_id: ''
   };
-
-  modoEdicion = false;
-  idEditando: number | null = null;
-  desdeHistorial = false;
+mostrarFormulario = true; // se muestra por defecto
+mascotaFiltrada: any = null; 
+filtroMascota: string = '';
+filtroTipo: string = ''; // <-- Agregado para evitar el error de propiedad inexistente
+modoEdicion = false;
+idEditando: number | null = null;
+desdeHistorial = false;
 
   constructor(
     private desparasitacionService: DesparasitacionService,
@@ -78,9 +82,12 @@ export class DesparasitacionesComponent implements OnInit, AfterViewInit {
 
   cargarDesparasitaciones(): void {
     this.desparasitacionService.obtenerDesparasitaciones().subscribe({
-      next: (data: any) => this.desparasitaciones = data,
-      error: (err: any) => console.error('Error al cargar:', err)
-    });
+  next: (data: any) => {
+    this.desparasitaciones = data;
+    this.desparasitacionesFiltradas = data; // Aquí se copia para filtrado
+  },
+  error: (err: any) => console.error('Error al cargar:', err)
+});
   }
 
   guardarDesparasitacion(): void {
@@ -141,4 +148,26 @@ limpiarFormulario(): void {
       });
     }
   }
+
+  toggleFormulario(): void {
+  this.mostrarFormulario = !this.mostrarFormulario;
+}
+
+ aplicarFiltros(): void {
+    this.desparasitacionesFiltradas = this.desparasitaciones.filter(t =>
+      !this.filtroMascota || t.mascota?.id.toString().includes(this.filtroMascota)
+    );
+  }
+
+  buscarMascotaFiltrada(): void {
+    const id = parseInt(this.filtroMascota, 10);
+    if (!isNaN(id)) {
+      const conMascota = this.desparasitaciones.find(t => t.mascota?.id === id);
+      this.mascotaFiltrada = conMascota ? conMascota.mascota : null;
+    } else {
+      this.mascotaFiltrada = null;
+    }
+    this.aplicarFiltros();
+  }
+
 }

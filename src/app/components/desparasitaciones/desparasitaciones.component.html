@@ -1,0 +1,111 @@
+<br>
+<h2 class="section-title">
+  <span class="material-icons">bug_report</span>
+  {{ modoEdicion ? 'Editar Desparasitación' : 'Registrar Desparasitación' }}
+</h2>
+<br>
+<!-- 🔘 Botón para mostrar u ocultar el formulario -->
+<button class="btn teal" (click)="toggleFormulario()">
+  <span class="material-icons">note_add</span>
+  {{ mostrarFormulario ? 'Ocultar' : 'Registrar Desparasitación' }}
+</button>
+<br>
+<br>
+<!-- 🐛 Formulario de creación/edición de desparasitación -->
+<form *ngIf="mostrarFormulario" (ngSubmit)="guardarDesparasitacion()" class="form-section">
+  <!-- Campo para el nombre del producto -->
+  <label for="nombre">Nombre del producto:</label>
+  <input type="text" id="nombre" [(ngModel)]="nuevaDesparasitacion.nombre" name="nombre" required />
+
+  <!-- Fecha de aplicación -->
+  <label for="fecha_aplicacion">Fecha de aplicación:</label>
+  <input type="date" id="fecha_aplicacion" [(ngModel)]="nuevaDesparasitacion.fecha_aplicacion" name="fecha_aplicacion" required />
+
+  <!-- Próxima dosis (opcional) -->
+  <label for="proxima_dosis">Próxima dosis (opcional):</label>
+  <input type="date" id="proxima_dosis" [(ngModel)]="nuevaDesparasitacion.proxima_dosis" name="proxima_dosis" />
+
+  <!-- Tipo de desparasitación -->
+  <label for="tipo">Tipo de desparasitación:</label>
+  <select id="tipo" [(ngModel)]="nuevaDesparasitacion.tipo" name="tipo" required>
+    <option value="" disabled selected>Selecciona el tipo</option>
+    <option value="Interna">Interna</option>
+    <option value="Externa">Externa</option>
+  </select>
+
+  <!-- Observaciones -->
+  <label for="observaciones">Observaciones:</label>
+  <textarea id="observaciones" [(ngModel)]="nuevaDesparasitacion.observaciones" name="observaciones" rows="2"></textarea>
+
+  <!-- ID de mascota (oculto, pero obligatorio para registrar correctamente) -->
+  <input type="hidden" [(ngModel)]="nuevaDesparasitacion.mascota_id" name="mascota_id" />
+
+  <!-- Botones de acción -->
+  <div class="form-buttons">
+    <button class="btn green" type="submit">
+      <span class="material-icons">save</span>
+      {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+    </button>
+    <button *ngIf="modoEdicion" class="btn grey" type="button" (click)="cancelarEdicion()">
+      <span class="material-icons">cancel</span> Cancelar
+    </button>
+  </div>
+</form>
+<br>
+
+<!-- 🔍 Filtros de búsqueda por ID y tipo de desparasitación -->
+<div class="filter-section">
+  <label for="filtroMascota">
+    <span class="material-icons">search</span> Mascota ID
+  </label>
+  <input
+    type="text"
+    id="filtroMascota"
+    [(ngModel)]="filtroMascota"
+    (input)="aplicarFiltros(); buscarMascotaFiltrada()"
+  />
+
+  <!-- 👁️ Mostrar nombre y dueño si existe la mascota -->
+  <div *ngIf="mascotaFiltrada">
+    <p><strong>🐾 Mascota:</strong> {{ mascotaFiltrada.nombre }}</p>
+    <p><strong>👤 Dueño:</strong> {{ mascotaFiltrada.usuario?.name || 'No disponible' }}</p>
+  </div>
+</div>
+<br>
+<br>
+<!-- 📋 Tabla con registros de desparasitación -->
+<h3>
+  <span class="material-icons">list_alt</span> Historial de Desparasitaciones
+</h3>
+
+<table class="striped responsive-table record-table">
+  <thead>
+    <tr>
+      <th>Mascota</th> <!-- ID y nombre de la mascota -->
+      <th>Nombre</th> <!-- Producto -->
+      <th>Fecha</th> <!-- Fecha aplicación -->
+      <th>Próxima</th> <!-- Próxima dosis -->
+      <th>Tipo</th> <!-- Interna / Externa -->
+      <th>Observaciones</th>
+      <th>Acciones</th> <!-- Editar / Eliminar -->
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of desparasitacionesFiltradas">
+      <td>{{ d.mascota?.id }} - {{ d.mascota?.nombre || 'Sin nombre' }}</td>
+      <td>{{ d.nombre }}</td>
+      <td>{{ d.fecha_aplicacion }}</td>
+      <td>{{ d.proxima_dosis || '-' }}</td>
+      <td>{{ d.tipo }}</td>
+      <td>{{ d.observaciones || '-' }}</td>
+      <td>
+        <button class="btn blue btn-sm" (click)="editarDesparasitacion(d)">
+          <span class="material-icons">edit</span>
+        </button>
+        <button class="btn red btn-sm" (click)="eliminarDesparasitacion(d.id)">
+          <span class="material-icons">delete</span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

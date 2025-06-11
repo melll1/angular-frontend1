@@ -1,5 +1,5 @@
 // Importamos lo necesario para el componente standalone
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -10,6 +10,8 @@ import { HttpClient } from '@angular/common/http';
   standalone: true, // Componente independiente sin necesidad de módulo
   imports: [CommonModule, FormsModule, RouterModule], // Módulos necesarios para ngModel y formularios
   templateUrl: './reset-password.component.html', // Plantilla HTML asociada
+  styleUrls: ['./reset-password.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ResetPasswordComponent {
   // Campo para capturar el correo electrónico

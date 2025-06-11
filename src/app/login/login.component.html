@@ -1,31 +1,44 @@
-<h2>Iniciar Sesión</h2>
 
-<form (ngSubmit)="onLogin()" #form="ngForm">
+<h1 class="brand">MASCOTI</h1> <!-- <- ahora va primero -->
+<div class="login-container">
+  <img src="/huella.png" class="huella-icon top-left" alt="huella" />
+  <img src="/huella.png" class="huella-icon top-right" alt="huella" />
 
-  <!-- Email -->
-  <input 
-    type="email" 
-    name="email" 
-    [(ngModel)]="email" 
-    placeholder="Email" 
-    required
-  />
-  <div *ngIf="errors.email" style="color:red">{{ errors.email }}</div>
-  <br>
+  <div class="login-box-wrapper">
+  
+  <img src="/dog.png" class="mascota-img-floating" />
 
-  <!-- Contraseña -->
-  <input 
-    type="password" 
-    name="password" 
-    [(ngModel)]="password" 
-    placeholder="Contraseña" 
-    required
-  />
-  <div *ngIf="errors.password" style="color:red">{{ errors.password }}</div>
-  <br>
+    <div class="login-box">
+      <img src="/huella.png" class="huella-inside" alt="huella" />
 
-  <button type="submit">Entrar</button>
-</form>
+      <h3>Iniciar sesión</h3>
 
-<a routerLink="/register">Registrarse</a> |
-<a routerLink="/reset-password">¿Olvidaste tu contraseña?</a>
+      <form (ngSubmit)="onLogin()" #form="ngForm">
+        <label>Correo Electrónico</label>
+        <input 
+          type="email" 
+          name="email" 
+          [(ngModel)]="email" 
+          placeholder="Correo "
+          required
+        />
+        <div *ngIf="errors.email" class="error">{{ errors.email }}</div>
+
+        <label>Contraseña</label>
+        <input 
+          type="password" 
+          name="password" 
+          [(ngModel)]="password" 
+          placeholder="******"
+          required
+        />
+        <div *ngIf="errors.password" class="error">{{ errors.password }}</div>
+
+        <a routerLink="/reset-password" class="forgot-link">Cambiar Contraseña</a>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <a routerLink="/register" class="register-link">Regístrate</a>
+    </div>
+  </div>
+</div>

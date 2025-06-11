@@ -1,122 +1,95 @@
-<h2>Registro de Mascota</h2>
+<h2 class="section-title">📋 Registro de Mascota</h2>
 
-<form (ngSubmit)="registrarMascota()" enctype="multipart/form-data">
+<form (ngSubmit)="registrarMascota()" enctype="multipart/form-data" class="form-container">
 
-  <!-- 🔍 Buscador de dueño -->
-<div class="input-field">
-  <label for="buscarDueno">Buscar dueño:</label>
-  <input
-    type="text"
-    id="buscarDueno"
-    [(ngModel)]="terminoBusqueda"
-    (input)="buscarUsuarios()"
-    name="buscarDueno"
-    autocomplete="off"
-  />
-
-  <!-- 🧾 Lista de resultados -->
-  <ul *ngIf="resultadosBusqueda.length > 0" class="collection">
-    <li
-      class="collection-item"
-      *ngFor="let usuario of resultadosBusqueda"
-      (click)="seleccionarUsuario(usuario)"
-      style="cursor: pointer;"
-    >
-      {{ usuario.name }} - {{ usuario.email }}
-    </li>
-  </ul>
-
-  <!-- ✅ Usuario seleccionado -->
-  <div *ngIf="usuarioSeleccionado">
-    <p>Dueño seleccionado: <strong>{{ usuarioSeleccionado.name }}</strong> ({{ usuarioSeleccionado.email }})</p>
+  <!-- 🔍 Buscar Dueño -->
+  <div class="input-field">
+    <label for="buscarDueno">👤 Buscar dueño:</label>
+    <input
+      type="text"
+      id="buscarDueno"
+      [(ngModel)]="terminoBusqueda"
+      (input)="buscarUsuarios()"
+      name="buscarDueno"
+      placeholder="Nombre o correo del dueño"
+    />
+    <ul *ngIf="resultadosBusqueda.length" class="owner-results">
+      <li *ngFor="let usuario of resultadosBusqueda" (click)="seleccionarUsuario(usuario)">
+        <span class="material-icons">person</span> {{ usuario.name }} - {{ usuario.email }}
+      </li>
+    </ul>
+    <p *ngIf="usuarioSeleccionado">
+      ✅ Dueño: <strong>{{ usuarioSeleccionado.name }}</strong> ({{ usuarioSeleccionado.email }})
+    </p>
   </div>
-</div>
 
-  <!-- Nombre -->
-  <div>
-    <label for="nombre">Nombre:</label>
+  <!-- Campos básicos con íconos -->
+  <div class="input-row">
+    <label for="nombre"><span class="material-icons">pets</span> Nombre</label>
     <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required />
-    <div *ngIf="errores.nombre" style="color:red;">{{ errores.nombre }}</div>
   </div>
 
-  <!-- Especie -->
-  <div>
-    <label for="especie">Especie:</label>
+  <div class="input-row">
+    <label for="especie"><span class="material-icons">category</span> Especie</label>
     <input type="text" id="especie" [(ngModel)]="especie" name="especie" required />
-    <div *ngIf="errores.especie" style="color:red;">{{ errores.especie }}</div>
   </div>
 
-  <!-- Raza -->
-  <div>
-    <label for="raza">Raza:</label>
+  <div class="input-row">
+    <label for="raza"><span class="material-icons">badge</span> Raza</label>
     <input type="text" id="raza" [(ngModel)]="raza" name="raza" />
-    <div *ngIf="errores.raza" style="color:red;">{{ errores.raza }}</div>
   </div>
 
-  <!-- Edad (manual, en caso de no usar fecha nacimiento) -->
-  <div>
-    <label for="edad">Edad:</label>
+  <div class="input-row">
+    <label for="edad"><span class="material-icons">calendar_today</span> Edad</label>
     <input type="number" id="edad" [(ngModel)]="edad" name="edad" min="0" />
-    <div *ngIf="errores.edad" style="color:red;">{{ errores.edad }}</div>
   </div>
 
-  <!-- Sexo -->
-  <div>
-    <label for="sexo">Sexo:</label>
+  <div class="input-row">
+    <label for="sexo"><span class="material-icons">wc</span> Sexo</label>
     <select id="sexo" [(ngModel)]="sexo" name="sexo">
-      <option value="">Selecciona el sexo</option>
+      <option value="">Selecciona</option>
       <option value="Macho">Macho</option>
       <option value="Hembra">Hembra</option>
     </select>
-    <div *ngIf="errores.sexo" style="color:red;">{{ errores.sexo }}</div>
   </div>
 
-  <!-- Fecha de nacimiento -->
-  <div>
-    <label for="fechaNacimiento">Fecha de nacimiento:</label>
+  <div class="input-row">
+    <label for="fechaNacimiento"><span class="material-icons">cake</span> Fecha de nacimiento</label>
     <input type="date" id="fechaNacimiento" [(ngModel)]="fechaNacimiento" name="fechaNacimiento" />
-    <div *ngIf="errores.fechaNacimiento" style="color:red;">{{ errores.fechaNacimiento }}</div>
   </div>
 
-  <!-- Número de microchip -->
-  <div>
-    <label for="microchip">Microchip:</label>
+  <div class="input-row">
+    <label for="microchip"><span class="material-icons">confirmation_number</span> Microchip</label>
     <input type="text" id="microchip" [(ngModel)]="microchip" name="microchip" />
-    <div *ngIf="errores.microchip" style="color:red;">{{ errores.microchip }}</div>
   </div>
 
-  <!-- Color del pelaje -->
-  <div>
-    <label for="color">Color:</label>
+  <div class="input-row">
+    <label for="color"><span class="material-icons">palette</span> Color</label>
     <input type="text" id="color" [(ngModel)]="color" name="color" />
-    <div *ngIf="errores.color" style="color:red;">{{ errores.color }}</div>
   </div>
 
-  <!-- ¿Esterilizado? -->
-  <div>
-  <label for="esterilizado">¿Esterilizado?</label>
-  <select [(ngModel)]="esterilizado" name="esterilizado" required>
-    <option value="" disabled selected>Selecciona una opción</option>
-    <option [ngValue]="true">Sí</option>
-    <option [ngValue]="false">No</option>
-  </select>
-  <div *ngIf="errores.esterilizado" style="color:red;">{{ errores.esterilizado }}</div>
-</div>
+  <div class="input-row">
+    <label for="esterilizado"><span class="material-icons">healing</span> ¿Esterilizado?</label>
+    <select [(ngModel)]="esterilizado" name="esterilizado">
+      <option value="" disabled>Selecciona</option>
+      <option [ngValue]="true">Sí</option>
+      <option [ngValue]="false">No</option>
+    </select>
+  </div>
 
-  <!-- Descripción -->
-  <div>
-    <label for="descripcion">Descripción:</label>
+  <div class="input-row">
+    <label for="descripcion"><span class="material-icons">notes</span> Descripción</label>
     <textarea id="descripcion" [(ngModel)]="descripcion" name="descripcion"></textarea>
   </div>
 
-  <!-- Foto -->
-  <div>
-    <label for="foto">Foto:</label>
+  <div class="input-row">
+    <label for="foto"><span class="material-icons">photo_camera</span> Foto</label>
     <input type="file" id="foto" (change)="onFotoSeleccionada($event)" />
-    <div *ngIf="errores.foto" style="color:red;">{{ errores.foto }}</div>
   </div>
 
-  <button class="btn teal" type="submit">Registrar Mascota</button>
-  <button class="btn grey" type="button" (click)="volver()">Volver</button>
+  <div class="form-actions">
+    <button type="submit" class="btn teal">✅ Registrar Mascota</button>
+    
+  </div>
 
 </form>

@@ -72,6 +72,43 @@ actualizarMascota(id: number, data: any): Observable<any> {
   return this.http.put(`${this.apiUrl}/${id}`, data, { headers });
 }
 
+asignarPaseador(mascotaId: number, paseadorId: number, desde: string, hasta: string): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = {
+    Authorization: `Bearer ${token}`
+  };
+
+  return this.http.post(
+    `http://localhost:8000/api/mascotas/${mascotaId}/asignar-paseador`,
+    {
+      paseador_id: paseadorId,
+      desde,
+      hasta
+    },
+    { headers }
+  );
+}
+
+obtenerPaseadores(): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = {
+    Authorization: `Bearer ${token}`
+  };
+
+  return this.http.get('http://localhost:8000/api/paseadores', { headers });
+}
+
+desasignarPaseador(mascotaId: number, paseadorId: number): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = { Authorization: `Bearer ${token}` };
+
+  return this.http.delete(
+    `http://localhost:8000/api/mascotas/${mascotaId}/desasignar-paseador/${paseadorId}`,
+    { headers }
+  );
+}
+
+
 
 }
 

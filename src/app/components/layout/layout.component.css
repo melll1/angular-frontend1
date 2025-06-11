@@ -1,0 +1,64 @@
+.container-layout {
+  height: 100vh;
+  background-color: #edf4f3; /* Fondo general */
+  
+}
+
+.brand {
+  color: white;
+  font-family: 'Chewy', cursive;
+  font-size: 50px;
+  text-align: center;
+  margin: 20px 0 0;
+  
+}
+
+/* SIDEBAR */
+mat-sidenav {
+  width: 240px;
+  background-color: #e2692e; /* Naranja oscuro como login/register */
+  color: white;
+  padding: 20px 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  align-items: center;
+}
+
+mat-sidenav a {
+  display: block;
+  color: white; /* blanco, mejor contraste */
+  text-decoration: none;
+  padding: 12px 24px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  border-radius: 0 20px 20px 0;
+}
+
+mat-sidenav a:hover {
+  background-color: #d4571c;
+}
+
+.active-link {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* TOOLBAR */
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #ff8a65; /* Mismo color que el logo "MASCOTI" */
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Chewy', cursive;
+  border-radius: 20px; /* Bordes redondeados en la parte inferior */
+  text-align: center;
+}
+
+/* CONTENIDO PRINCIPAL */
+mat-sidenav-content {
+  background-color: #edf4f3;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}

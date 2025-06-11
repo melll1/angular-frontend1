@@ -1,0 +1,96 @@
+<br>
+<h2 class="section-title">
+  <span class="material-icons">vaccines</span>
+  {{ modoEdicion ? 'Editar Vacuna' : 'Registrar Vacuna' }}
+</h2>
+<br>
+<!-- 🔘 Botón para ocultar o mostrar formulario -->
+<button class="btn teal" (click)="toggleFormulario()">
+  <span class="material-icons">note_add</span>
+  {{ mostrarFormulario ? 'Ocultar' : 'Registrar Vacuna' }}
+</button>
+
+
+<!-- 🧾 Formulario de registro/edición -->
+<form *ngIf="mostrarFormulario" (ngSubmit)="guardarVacuna()" class="form-section">
+  <label for="nombre">Nombre de la vacuna:</label>
+  <input type="text" id="nombre" [(ngModel)]="nuevaVacuna.nombre" name="nombre" required>
+
+  <label for="fecha_aplicacion">Fecha de aplicación:</label>
+  <input type="date" id="fecha_aplicacion" [(ngModel)]="nuevaVacuna.fecha_aplicacion" name="fecha_aplicacion" required>
+
+  <label for="proxima_dosis">Próxima dosis:</label>
+  <input type="date" id="proxima_dosis" [(ngModel)]="nuevaVacuna.proxima_dosis" name="proxima_dosis">
+
+  <label for="lote">Lote:</label>
+  <input type="text" id="lote" [(ngModel)]="nuevaVacuna.lote" name="lote">
+
+  <label for="observaciones">Observaciones:</label>
+  <textarea id="observaciones" [(ngModel)]="nuevaVacuna.observaciones" name="observaciones" rows="2"></textarea>
+
+  
+
+  <div class="form-buttons">
+    <button class="btn green" type="submit">
+      <span class="material-icons">save</span>
+      {{ modoEdicion ? 'Actualizar Vacuna' : 'Guardar Vacuna' }}
+    </button>
+    <button *ngIf="modoEdicion" class="btn grey" type="button" (click)="cancelarEdicion()">
+      <span class="material-icons">cancel</span> Cancelar
+    </button>
+  </div>
+</form>
+<br>
+<br>
+<!-- 🔍 Filtros de búsqueda por ID y tipo de desparasitación -->
+<div class="filter-section">
+  <label for="filtroMascota">
+    <span class="material-icons">search</span> Mascota ID
+  </label>
+  <input
+    type="text"
+    id="filtroMascota"
+    [(ngModel)]="filtroMascota"
+    (input)="aplicarFiltros(); buscarMascotaFiltrada()"
+  />
+
+  <!-- 👁️ Mostrar nombre y dueño si existe la mascota -->
+  <div *ngIf="mascotaFiltrada">
+    <p><strong>🐾 Mascota:</strong> {{ mascotaFiltrada.nombre }}</p>
+    <p><strong>👤 Dueño:</strong> {{ mascotaFiltrada.usuario?.name || 'No disponible' }}</p>
+  </div>
+</div>
+
+<!-- 📋 Lista de vacunas (SE MANTIENE SIN CAMBIOS) -->
+<h3>
+  <span class="material-icons">list</span> Vacunas Registradas
+</h3>
+
+<ul class="record-list">
+   <li *ngFor="let vacuna of vacunasFiltradas">
+    <div>
+      <span class="material-icons">event</span>
+      <strong>{{ vacuna.fecha_aplicacion }}</strong> - 💉 {{ vacuna.nombre }}
+      <span>(Mascota ID: {{ vacuna.mascota_id }})</span>
+    </div>
+
+    <div *ngIf="vacuna.proxima_dosis">
+      <span class="material-icons">schedule</span> Próxima dosis: {{ vacuna.proxima_dosis }}
+    </div>
+    <div *ngIf="vacuna.lote">
+      <span class="material-icons">confirmation_number</span> Lote: {{ vacuna.lote }}
+    </div>
+    <div *ngIf="vacuna.observaciones">
+      <span class="material-icons">notes</span> Observaciones: {{ vacuna.observaciones }}
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn blue btn-sm" (click)="editarVacuna(vacuna)">
+        <span class="material-icons">edit</span> Editar
+      </button>
+      <button class="btn red btn-sm" (click)="eliminarVacuna(vacuna.id)">
+        <span class="material-icons">delete</span> Eliminar
+      </button>
+    </div>
+  </li>
+</ul>

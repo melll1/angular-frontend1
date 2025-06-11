@@ -1,0 +1,42 @@
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.no-notifications {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  margin-top: 30px;
+}
+
+.collection-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-content .message {
+  margin: 5px 0;
+}
+
+.notification-content .date {
+  font-size: 12px;
+  color: #999;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+}

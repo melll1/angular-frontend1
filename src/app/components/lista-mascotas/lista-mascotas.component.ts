@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { MascotasService } from '../../services/mascotas.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 
 
 @Component({
@@ -15,15 +17,23 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ListaMascotasComponent implements OnInit {
   // 🐾 Propiedades
-  todasLasMascotas: any[] = []; // Lista completa para búsqueda
-  mascotas: any[] = [];         // Lista filtrada (la visible)
+  todasLasMascotas: any[] = [];
+  mascotas: any[] = [];
   mascotaSeleccionada: any = null;
   modoEdicion: boolean = false;
-  terminoBusqueda: string = ''; // 🔍 Campo de búsqueda
+  terminoBusqueda: string = '';
   role: string = '';
   foto: File | null = null;
+  paseadores: any[] = [];
+  paseadorEmail: string = '';
+  mascotaIdParaAsignar: number | null = null;
+  desde: string = '';
+  hasta: string = '';
+  modalInstance: any = null;
 
-  constructor(private mascotasService: MascotasService, private router: Router, private http: HttpClient) {}
+  @ViewChild('modalAsignar', { static: true }) modalAsignar!: TemplateRef<any>;
+
+  constructor(private mascotasService: MascotasService, private router: Router, private http: HttpClient, private modalService: NgbModal) {}
 
 
 
@@ -31,6 +41,7 @@ export class ListaMascotasComponent implements OnInit {
   const roleData = localStorage.getItem('role');
   if (roleData) {
     this.role = roleData; // Ya es un string plano, no usar JSON.parse
+    this.obtenerPaseadores();
   }
 
   this.cargarMascotas();
@@ -128,9 +139,7 @@ export class ListaMascotasComponent implements OnInit {
   this.router.navigate(['/registro-mascota']);
 }
 
-irAlPerfil(): void {
-  this.router.navigate(['/perfiles']);
-}
+
 
 onFileSelected(event: any) {
   this.foto = event.target.files[0];
@@ -139,6 +148,86 @@ onFileSelected(event: any) {
 verHistorial(mascotaId: number): void {
   // Navega a la ruta /ver-historial/:id
   this.router.navigate(['/historial-medico', mascotaId]);
+}
+
+ mostrarAsignarPaseador(modalTemplate: any, mascotaId: number): void {
+  this.mascotaIdParaAsignar = mascotaId;
+  this.modalInstance = this.modalService.open(modalTemplate);
+}
+
+
+cerrarModal(): void {
+  this.modalInstance?.close();
+}
+
+  asignarPaseadorPorEmail(): void {
+    if (!this.paseadorEmail || !this.desde || !this.hasta || this.mascotaIdParaAsignar === null) {
+      alert('Completa todos los campos');
+      return;
+    }
+
+     // Convierte fechas al formato correcto
+  const fechaDesdeFormateada = this.convertirFecha(this.desde);
+  const fechaHastaFormateada = this.convertirFecha(this.hasta);
+
+    this.http.get<any[]>(`http://localhost:8000/api/buscar-usuarios?query=${this.paseadorEmail}`).subscribe({
+      next: usuarios => {
+        const paseador = usuarios.find(u => u.email === this.paseadorEmail && u.role === 'paseador');
+        if (!paseador) {
+          alert('No se encontró un paseador con ese correo');
+          return;
+        }
+
+        this.mascotasService.asignarPaseador(this.mascotaIdParaAsignar!, paseador.id, this.desde, this.hasta).subscribe({
+          next: () => {
+            alert('Paseador asignado correctamente');
+            this.paseadorEmail = '';
+            this.mascotaIdParaAsignar = null;
+            this.desde = '';
+            this.hasta = '';
+            this.cerrarModal();
+          },
+          error: () => alert('Error al asignar paseador')
+        });
+      },
+      error: () => alert('Error al buscar paseador')
+    });
+  }
+
+  obtenerPaseadores(): void {
+    this.http.get<any[]>('http://localhost:8000/api/buscar-usuarios?rol=paseador')
+      .subscribe({
+        next: res => {
+          this.paseadores = res;
+        },
+        error: err => {
+          console.error('Error al cargar paseadores', err);
+        }
+      });
+  }
+
+  desasignarPaseador(mascota: any): void {
+  if (!mascota.asignaciones || !mascota.asignaciones.length) {
+    alert('No hay paseador asignado');
+    return;
+  }
+
+  const paseadorId = mascota.asignaciones[0].paseador_id;
+
+  if (confirm('¿Desasignar paseador actual?')) {
+    this.mascotasService.desasignarPaseador(mascota.id, paseadorId).subscribe({
+      next: () => {
+        alert('Paseador desasignado');
+        this.cargarMascotas();
+      },
+      error: () => alert('Error al desasignar paseador')
+    });
+  }
+}
+
+convertirFecha(fecha: string): string {
+  const partes = fecha.split('/'); // divide por "/"
+  return `${partes[2]}-${partes[1]}-${partes[0]}`; // devuelve en formato YYYY-MM-DD
 }
 
 }

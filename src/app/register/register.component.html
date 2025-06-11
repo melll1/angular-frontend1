@@ -1,91 +1,51 @@
-<h2>Registro</h2>
+<h1 class="brand">MASCOTI</h1> <!-- <- ahora va primero -->
+<div class="login-container">
+  <img src="/huella.png" class="huella-icon top-left" alt="huella" />
+  <img src="/huella.png" class="huella-icon top-right" alt="huella" />
 
-<form (ngSubmit)="onRegister()" #form="ngForm">
-
-  <!-- angular: Campo para ingresar el nombre, enlazado a la propiedad 'name' del componente -->
-  <input
-    type="text"
-    name="name"
-    [(ngModel)]="name"
-    placeholder="Nombre"
-    required
+  <div class="login-box-wrapper">
     
-  />
-  <!-- angular: Muestra error si la validación del nombre falla -->
-  <div *ngIf="errors.name" style="color: red">{{ errors.name }}</div>
-  <br />
+    <img src="/gatito1.png" class="mascota-img-floating" />
 
-  <!-- angular: Campo para ingresar el email, enlazado a 'email' -->
-  <input
-    type="email"
-    name="email"
-    [(ngModel)]="email"
-    placeholder="Email"
-    required
-    
-  />
-  <!-- angular: Muestra error si la validación del email falla -->
-  <div *ngIf="errors.email" style="color: red">{{ errors.email }}</div>
-  <br />
+    <div class="login-box">
+      <img src="/huella.png" class="huella-inside" alt="huella" />
 
-  <!-- angular: Campo para ingresar la contraseña, enlazado a 'password' -->
-<input
-  type="password"
-  name="password"
-  [(ngModel)]="password"
-  placeholder="Contraseña"
-  required
-/>
-<!-- angular: Muestra error si la validación de la contraseña falla -->
-<div *ngIf="errors.password" style="color: red">{{ errors.password }}</div>
-<br />
+      <h3>Registro</h3>
 
-  <!-- angular: Campo para repetir contraseña, enlazado a 'password_confirmation' -->
-  <input
-    type="password"
-    name="password_confirmation"
-    [(ngModel)]="password_confirmation"
-    placeholder="Repetir Contraseña"
-    required
-    
-  />
-  <!-- angular: Muestra error si la confirmación de contraseña falla -->
-  <div *ngIf="errors.password_confirmation" style="color: red">{{ errors.password_confirmation }}</div>
-  <br />
+      <form (ngSubmit)="onRegister()" #form="ngForm">
+        <label>Nombre</label>
+        <input type="text" name="name" [(ngModel)]="name" placeholder="Nombre" required />
+        <div *ngIf="errors.name" class="error">{{ errors.name }}</div>
 
-  <!-- angular: Campo para ingresar teléfono, enlazado a 'telefono' -->
-  <input
-    type="text"
-    name="telefono"
-    [(ngModel)]="telefono"
-    placeholder="Teléfono"
-    required
-    
-  />
-  <!-- angular: Muestra error si la validación del teléfono falla -->
-  <div *ngIf="errors.telefono" style="color: red">{{ errors.telefono }}</div>
-  <br />
+        <label>Email</label>
+        <input type="email" name="email" [(ngModel)]="email" placeholder="Email" required />
+        <div *ngIf="errors.email" class="error">{{ errors.email }}</div>
 
-  <!-- angular: Select para elegir rol, con enlace bidireccional a 'role' -->
-   
-<!-- Materialize select -->
+        <label>Contraseña</label>
+        <input type="password" name="password" [(ngModel)]="password" placeholder="Contraseña" required />
+        <div *ngIf="errors.password" class="error">{{ errors.password }}</div>
 
-  <select [(ngModel)]="role" name="role" required>
-    <option value="" disabled selected>Selecciona un rol</option>
-    <option value="veterinario">Veterinario</option>
-    <option value="dueno">Dueño</option>
-    <option value="paseador">Paseador</option>
-  </select>
-  
+        <label>Repetir Contraseña</label>
+        <input type="password" name="password_confirmation" [(ngModel)]="password_confirmation" placeholder="Repetir Contraseña" required />
+        <div *ngIf="errors.password_confirmation" class="error">{{ errors.password_confirmation }}</div>
 
-<div *ngIf="errors.role" style="color: red">{{ errors.role }}</div>
+        <label>Teléfono</label>
+        <input type="text" name="telefono" [(ngModel)]="telefono" placeholder="Teléfono" required />
+        <div *ngIf="errors.telefono" class="error">{{ errors.telefono }}</div>
 
-  <br />
-  <!-- angular: Botón para enviar el formulario -->
-  <button type="submit" class="full-width btn-submit">Registrarse</button>
-</form>
+        <label>Rol</label>
+        <select [(ngModel)]="role" name="role" required>
+          <option value="" disabled selected>Selecciona un rol</option>
+          <option value="veterinario">Veterinario</option>
+          <option value="dueno">Dueño</option>
+          <option value="paseador">Paseador</option>
+        </select>
+        <div *ngIf="errors.role" class="error">{{ errors.role }}</div>
 
-<!-- angular: Link para ir a la página de login -->
-<a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+        <button type="submit" class="login-btn">Registrarse</button>
+      </form>
 
-  
+      <a routerLink="/login" class="register-link">¿Ya tienes cuenta? Inicia sesión</a>
+    </div>
+  </div>
+</div>

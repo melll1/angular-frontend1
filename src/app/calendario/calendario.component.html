@@ -1,0 +1,38 @@
+<full-calendar [options]="calendarOptions"></full-calendar>
+
+<ng-template #modalTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title">Crear cita para el {{ fechaSeleccionada }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="cerrarModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <label>Buscar mascota o dueño:</label>
+    <input type="text" [(ngModel)]="busqueda" (input)="buscarMascotas()" placeholder="Buscar por nombre, correo..." class="form-control" />
+
+    <div *ngIf="resultados.length > 0">
+      <ul class="list-group mt-2">
+        <li *ngFor="let m of resultados" class="list-group-item list-group-item-action" (click)="seleccionarMascota(m)">
+          {{ m.nombre }} (Dueño: {{ m.usuario?.name }})
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="mascotaSeleccionada" class="mt-2">
+      <p><span>🐶</span> Mascota: {{ mascotaSeleccionada.nombre }}</p>
+    </div>
+
+    <label for="motivo">Motivo:</label>
+    <input type="text" id="motivo" [(ngModel)]="motivo" class="form-control" />
+
+    <label for="hora" class="mt-2">Hora:</label>
+    <input type="time" id="hora" [(ngModel)]="horaSeleccionada" class="form-control" />
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="crearCita()">Crear Cita</button>
+  </div>
+</ng-template>

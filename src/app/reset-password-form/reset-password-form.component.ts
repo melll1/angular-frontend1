@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
@@ -9,6 +9,8 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './reset-password-form.component.html',
+  styleUrls: ['./reset-password-form.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ResetPasswordFormComponent implements OnInit {
   token = '';

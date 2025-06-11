@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MascotasService } from '../../services/mascotas.service';
@@ -11,6 +11,8 @@ declare const M: any;
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './registro-mascota.component.html',
+  styleUrls: ['./registro-mascota.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class RegistroMascotaComponent {
 
@@ -38,10 +40,7 @@ export class RegistroMascotaComponent {
     private http: HttpClient,
     private router: Router
   ) {}
-  volver(): void {
-  this.router.navigate(['/lista-mascotas']); 
-}
-
+ 
   ngAfterViewInit() {
     const elems = document.querySelectorAll('select');
     M.FormSelect.init(elems);
@@ -119,6 +118,7 @@ buscarUsuarios() {
     formData.append('microchip', this.microchip);
     formData.append('color', this.color);
     formData.append('esterilizado', this.esterilizado ? '1' : '0');
+    formData.append('descripcion', this.descripcion);
     formData.append('user_id', this.usuarioSeleccionado.id); // Asocia con el dueño
     if (this.fotoSeleccionada) {
       formData.append('foto', this.fotoSeleccionada);

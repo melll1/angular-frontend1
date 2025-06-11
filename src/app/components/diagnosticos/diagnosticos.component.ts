@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DiagnosticoService } from '../services/diagnostico.service';
+import { DiagnosticoService } from '../../services/diagnostico.service';
+import { MascotasService } from '../../services/mascotas.service';
 
 declare const M: any;
 
@@ -16,6 +17,8 @@ declare const M: any;
 })
 export class DiagnosticosComponent implements OnInit, AfterViewInit {
   diagnosticos: any[] = [];
+  diagnosticosFiltrados: any[] = [];
+
   nuevoDiagnostico: any = {
     titulo: '',
     descripcion: '',
@@ -23,12 +26,17 @@ export class DiagnosticosComponent implements OnInit, AfterViewInit {
     mascota_id: ''
   };
 
+  mostrarFormulario = true;
+  filtroMascota = '';
+  mascotaFiltrada: any = null;
+
   modoEdicion: boolean = false;
   idEditando: number | null = null;
   desdeHistorial: boolean = false;
 
   constructor(
     private diagnosticoService: DiagnosticoService,
+    private mascotaService: MascotasService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -41,36 +49,69 @@ export class DiagnosticosComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-  this.route.queryParams.subscribe(params => {
-    if (params['editar'] && params['id']) {
-  this.modoEdicion = true;
-  this.idEditando = Number(params['id']);
-  this.nuevoDiagnostico = {
-    descripcion: params['descripcion'] || '',
-    fecha: params['fecha'] || '',
-    mascota_id: Number(params['mascota_id']) || ''
-  };
-  this.desdeHistorial = true;
-}
-else if (params['mascota_id'] && params['fecha'] && params['descripcion']) {
-      this.nuevoDiagnostico = {
-        descripcion: params['descripcion'],
-        fecha: params['fecha'],
-        mascota_id: +params['mascota_id']
-      };
-      this.desdeHistorial = true;
-    }
-  });
+    this.route.queryParams.subscribe(params => {
+      if (params['editar'] && params['id']) {
+        this.modoEdicion = true;
+        this.idEditando = Number(params['id']);
+        this.nuevoDiagnostico = {
+          titulo: params['titulo'] || '',
+          descripcion: params['descripcion'] || '',
+          fecha: params['fecha'] || '',
+          mascota_id: Number(params['mascota_id']) || ''
+        };
+        this.desdeHistorial = true;
+      } else if (params['mascota_id'] && params['fecha'] && params['descripcion']) {
+        this.nuevoDiagnostico = {
+          titulo: '',
+          descripcion: params['descripcion'],
+          fecha: params['fecha'],
+          mascota_id: +params['mascota_id']
+        };
+        this.desdeHistorial = true;
+      }
+    });
 
-  this.cargarDiagnosticos();
-}
-
+    this.cargarDiagnosticos();
+    this.cargarMascotas();
+  }
 
   cargarDiagnosticos(): void {
     this.diagnosticoService.obtenerDiagnosticos().subscribe({
-      next: (data: any) => this.diagnosticos = data,
+      next: (data: any) => {
+        this.diagnosticos = data;
+        this.diagnosticosFiltrados = data;
+        this.buscarMascotaFiltrada();
+      },
       error: (err: any) => console.error('Error al cargar:', err)
     });
+  }
+
+  cargarMascotas(): void {
+    this.mascotaService.obtenerMascotas().subscribe({
+      next: data => {},
+      error: () => console.error('Error al cargar mascotas')
+    });
+  }
+
+  toggleFormulario(): void {
+    this.mostrarFormulario = !this.mostrarFormulario;
+  }
+
+  aplicarFiltros(): void {
+    this.diagnosticosFiltrados = this.diagnosticos.filter(d =>
+      !this.filtroMascota || d.mascota?.id?.toString().includes(this.filtroMascota)
+    );
+  }
+
+  buscarMascotaFiltrada(): void {
+    const id = parseInt(this.filtroMascota, 10);
+    if (!isNaN(id)) {
+      const encontrado = this.diagnosticos.find(d => d.mascota?.id === id);
+      this.mascotaFiltrada = encontrado ? encontrado.mascota : null;
+    } else {
+      this.mascotaFiltrada = null;
+    }
+    this.aplicarFiltros();
   }
 
   guardarDiagnostico(): void {
@@ -86,34 +127,32 @@ else if (params['mascota_id'] && params['fecha'] && params['descripcion']) {
     } else {
       this.diagnosticoService.crearDiagnostico(this.nuevoDiagnostico).subscribe({
         next: (res: any) => {
-          alert('Diagnóstico registrado.');
-          this.limpiarFormulario();
           this.diagnosticos.push(res.diagnostico);
+          this.diagnosticosFiltrados = this.diagnosticos;
+          this.cancelarEdicion();
+          alert('Diagnóstico registrado.');
         },
         error: () => alert('Error al registrar.')
       });
     }
   }
 
-  limpiarFormulario(): void {
+  cancelarEdicion(): void {
+    this.modoEdicion = false;
+    this.idEditando = null;
     this.nuevoDiagnostico = {
       titulo: '',
       descripcion: '',
       fecha: '',
       mascota_id: ''
     };
-    this.modoEdicion = false;
-    this.idEditando = null;
   }
 
-  editarDiagnostico(diagnostico: any): void {
+  editarDiagnostico(d: any): void {
     this.modoEdicion = true;
-    this.idEditando = diagnostico.id;
-    this.nuevoDiagnostico = { ...diagnostico };
-  }
-
-  cancelarEdicion(): void {
-    this.limpiarFormulario();
+    this.idEditando = d.id;
+    this.nuevoDiagnostico = { ...d };
+    if (!this.mostrarFormulario) this.toggleFormulario();
   }
 
   eliminarDiagnostico(id: number): void {
@@ -121,6 +160,7 @@ else if (params['mascota_id'] && params['fecha'] && params['descripcion']) {
       this.diagnosticoService.eliminarDiagnostico(id).subscribe({
         next: () => {
           this.diagnosticos = this.diagnosticos.filter(d => d.id !== id);
+          this.aplicarFiltros();
           alert('Diagnóstico eliminado.');
         },
         error: () => alert('Error al eliminar.')

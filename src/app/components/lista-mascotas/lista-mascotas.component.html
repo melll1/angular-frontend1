@@ -1,29 +1,19 @@
 <div class="container mt-4">
   <h2 class="mb-3">Lista de Mascotas</h2>
 
-  
-  <!-- 🔘 Botón para ir al registro -->
+  <!-- Botón para ir al registro -->
   <button *ngIf="role === 'veterinario'" class="btn teal" (click)="irARegistro()">➕ Añadir Mascota</button>
-  
-  <!-- 🔍 Input de búsqueda -->
-<div style="text-align: right; margin-bottom: 10px;">
-  <input
-    type="text"
-    placeholder="Buscar por nombre, dueño o correo"
-    [(ngModel)]="terminoBusqueda"
-    (input)="filtrarMascotas()"
-    style="padding: 5px; width: 300px;"
-  />
-</div>
 
-<!-- 🏠 Ícono de casita usando Material Icons -->
-  <button
-    style="border: none; background: none; cursor: pointer; font-size: 24px;"
-    (click)="irAlPerfil()"
-    title="Ir a perfil"
-  >
-    <span class="material-icons">home</span>
-  </button>
+  <!-- Input de búsqueda -->
+  <div style="text-align: right; margin-bottom: 10px;">
+    <input
+      type="text"
+      placeholder="Buscar por nombre, dueño o correo"
+      [(ngModel)]="terminoBusqueda"
+      (input)="filtrarMascotas()"
+      style="padding: 5px; width: 300px;"
+    />
+  </div>
 
 
   <table class="table table-striped">
@@ -38,43 +28,75 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Iteramos sobre la lista de mascotas -->
       <tr *ngFor="let mascota of mascotas">
         <td>{{ mascota.id }}</td>
         <td>{{ mascota.nombre }}</td>
         <td>{{ mascota.especie }}</td>
         <td>{{ mascota.raza }}</td>
         <td>{{ mascota.edad }}</td>
-         <button (click)="verHistorial(mascota.id)">Ver Historial</button>
         <td>
-          <button (click)="iniciarEdicion(mascota)">Editar</button>
-          <button *ngIf="role === 'veterinario'" class="btn btn-danger btn-sm" (click)="eliminarMascota(mascota.id)">Eliminar</button>
+          <!-- Ver Historial -->
+<button class="primero" (click)="verHistorial(mascota.id)">
+  <span class="material-icons">history</span> Historial
+</button>
+
+<!-- Editar -->
+<button class="segundo" (click)="iniciarEdicion(mascota)">
+  <span class="material-icons">edit</span> Editar
+</button>
+
+<!-- Eliminar -->
+<button *ngIf="role === 'veterinario'" class="btn btn-danger btn-sm" (click)="eliminarMascota(mascota.id)">
+  <span class="material-icons">delete</span> Eliminar
+</button>
+
+<!-- Asignar Paseador -->
+<button class="btn btn-primary" *ngIf="role === 'dueno'" (click)="mostrarAsignarPaseador(modalAsignar, mascota.id)">
+  <span class="material-icons">person_add</span> Asignar Paseador
+</button>
+
+<!-- Desasignar Paseador -->
+<button class="btn btn-warning" *ngIf="role === 'dueno' && mascota.asignaciones?.length" (click)="desasignarPaseador(mascota)">
+  <span class="material-icons">person_remove</span> Desasignar
+</button>
+
         </td>
       </tr>
     </tbody>
   </table>
 
   <div *ngIf="modoEdicion" style="margin-top: 20px;">
-  <h3>Editar Mascota</h3>
-  <form (ngSubmit)="guardarCambios()">
-    <label>
-      Nombre:
-      <input [(ngModel)]="mascotaSeleccionada.nombre" name="nombre" required />
-    </label>
-    <label>
-      Edad:
-      <input [(ngModel)]="mascotaSeleccionada.edad" name="edad" required type="number" />
-    </label>
-
-    <label for="foto">📷 Foto:</label>
-<input type="file" (change)="onFileSelected($event)" accept="image/*">
-
-    <!-- Agrega más campos según tu modelo -->
-    <button type="submit">Guardar</button>
-    <button type="button" (click)="cancelarEdicion()">Cancelar</button>
-  </form>
-
-  
+    <h3>Editar Mascota</h3>
+    <form (ngSubmit)="guardarCambios()">
+      <label>
+        Nombre:
+        <input [(ngModel)]="mascotaSeleccionada.nombre" name="nombre" required />
+      </label>
+      <label>
+        Edad:
+        <input [(ngModel)]="mascotaSeleccionada.edad" name="edad" required type="number" />
+      </label>
+      <label for="foto">📷 Foto:</label>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+      <button type="submit">Guardar</button>
+      <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+    </form>
+  </div>
 </div>
 
-</div>
+<!-- Modal Bootstrap para asignar paseador -->
+<ng-template #modalAsignar let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Asignar Paseador</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <input type="email" [(ngModel)]="paseadorEmail" placeholder="Correo del paseador" class="form-control mb-2" required />
+    <input type="date" [(ngModel)]="desde" class="form-control mb-2" placeholder="Desde" required />
+    <input type="date" [(ngModel)]="hasta" class="form-control" placeholder="Hasta" required />
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+    <button type="button" class="btn btn-success" (click)="asignarPaseadorPorEmail()">Asignar</button>
+  </div>
+</ng-template>
