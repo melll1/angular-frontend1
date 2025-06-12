@@ -1,3 +1,6 @@
+<br>
+<br>
+
 <h2>
   <span class="material-icons">person</span>
   Bienvenido, {{ usuario.name }}
@@ -8,16 +11,16 @@
   <strong>Correo:</strong> {{ usuario.email }}
 </p>
 
+
+
 <p>
   <span class="material-icons">badge</span>
   <strong>Rol:</strong> {{ usuario.role }}
 </p>
 
-<!-- VETERINARIO -->
-<div *ngIf="usuario.role === 'veterinario'">
-  <p><span class="material-icons">medical_services</span> Perfil de Veterinario: puedes gestionar pacientes.</p>
+<br>
 
-  <div class="citas-container">
+<div class="citas-container">
     <!-- Citas hoy -->
     <div *ngIf="citasHoy.length > 0">
       <h4><span class="material-icons">today</span> Citas para hoy</h4>
@@ -45,6 +48,13 @@
   </div>
 
   <br>
+<!-- VETERINARIO -->
+<div *ngIf="usuario.role === 'veterinario'">
+  <p><span class="material-icons">medical_services</span> Perfil de Veterinario: puedes gestionar pacientes.</p>
+
+  
+
+  <br>
   <button class="btn teal" (click)="irARegistro()">
     <span class="material-icons left">add</span> Registrar Mascota
   </button>
@@ -53,6 +63,7 @@
 <!-- DUEÑO -->
 <div *ngIf="usuario.role === 'dueno'">
   <p><span class="material-icons">pets</span> Eres dueño de mascota. Puedes gestionar tus mascotas.</p>
+  
 
   <div class="tarjetas-mascotas" *ngIf="mascotas.length > 0">
     <mat-card class="tarjeta-mascota-mejorada" *ngFor="let mascota of mascotas">
