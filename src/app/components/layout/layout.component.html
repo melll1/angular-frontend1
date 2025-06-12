@@ -15,7 +15,13 @@
     <a routerLink="/desparasitaciones" routerLinkActive="active-link" (click)="cerrarSiEsOver()">🐛 Desparasitaciones</a>
     <a routerLink="/tratamientos" routerLinkActive="active-link" (click)="cerrarSiEsOver()">💊 Tratamientos</a>
     <a routerLink="/diagnosticos" routerLinkActive="active-link" (click)="cerrarSiEsOver()">🩺 Diagnósticos</a>
-    <a routerLink="/notificaciones" routerLinkActive="active-link" (click)="cerrarSiEsOver()">🔔 Notificaciones</a>
+    <a routerLink="/notificaciones" routerLinkActive="active-link" (click)="cerrarSiEsOver()" style="display: flex; align-items: center; justify-content: space-between;">
+  <span>🔔 Notificaciones</span>
+  <span *ngIf="notificacionesNoLeidas > 0" class="badge red white-text" style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 2px 6px; border-radius: 12px;">
+    {{ notificacionesNoLeidas }}
+  </span>
+</a>
+
     <a routerLink="/perfiles" routerLinkActive="active-link" (click)="cerrarSiEsOver()">👤 Perfil</a>
     <a routerLink="/calendario" routerLinkActive="active-link" (click)="cerrarSiEsOver()">📅 Calendario</a>
   </mat-sidenav>

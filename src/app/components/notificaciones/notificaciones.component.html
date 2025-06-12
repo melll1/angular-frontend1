@@ -2,6 +2,13 @@
   <span class="material-icons">notifications</span> Notificaciones
 </h2>
 
+<div class="acciones-superiores" *ngIf="notificaciones.length > 0">
+  <button class="btn green lighten-1 white-text"
+          (click)="marcarTodasLeidas()">
+    <span class="material-icons left">done_all</span> Marcar todas como leídas
+  </button>
+</div>
+
 <div *ngIf="notificaciones.length === 0" class="no-notifications">
   <p><span class="material-icons">inbox</span> No tienes notificaciones pendientes.</p>
 </div>
@@ -13,7 +20,20 @@
         <strong class="title">{{ notificacion.tipo }}</strong>
         <p class="message">{{ notificacion.mensaje }}</p>
         <small class="date">📅 {{ notificacion.fecha_notificacion | date: 'short' }}</small>
+
+        <!-- Botones para solicitud de cita -->
+        <div *ngIf="notificacion.tipo === 'solicitud-cita' && !notificacion.leido">
+          <button class="btn btn-small green white-text"
+                  (click)="responderCita(notificacion, 'aceptada')">
+            ✅ Aceptar
+          </button>
+          <button class="btn btn-small red white-text"
+                  (click)="responderCita(notificacion, 'rechazada')">
+            ❌ Rechazar
+          </button>
+        </div>
       </div>
+
       <div>
         <span *ngIf="notificacion.leido" class="badge green white-text">Leída</span>
         <button *ngIf="!notificacion.leido"

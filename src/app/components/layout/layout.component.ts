@@ -7,6 +7,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { BreakpointObserver, LayoutModule } from '@angular/cdk/layout'; // 👈 necesario
+import { NotificacionService } from '../../services/notificacion.service';
+
 
 @Component({
   selector: 'app-layout',
@@ -28,12 +30,27 @@ import { BreakpointObserver, LayoutModule } from '@angular/cdk/layout'; // 👈 
 export class LayoutComponent {
   sidebarAbierto = true;
   modoSidenav: 'over' | 'side' = 'side';
+  notificacionesNoLeidas = 0;
 
-  constructor(private breakpointObserver: BreakpointObserver) {
+  constructor(private breakpointObserver: BreakpointObserver, private notificacionService: NotificacionService) {
     this.breakpointObserver.observe(['(max-width: 768px)']).subscribe(result => {
       this.modoSidenav = result.matches ? 'over' : 'side';
       this.sidebarAbierto = !result.matches;
     });
+     this.notificacionService.contador$.subscribe(c => {
+    this.notificacionesNoLeidas = c;
+  });
+  }
+
+  obtenerContadorNotificaciones(): void {
+    this.notificacionService.obtenerNotificaciones().subscribe({
+    next: (notificaciones: any[]) => {
+      this.notificacionesNoLeidas = notificaciones.filter(n => !n.leido).length;
+    },
+    error: () => {
+      this.notificacionesNoLeidas = 0;
+    }
+  });
   }
 
   toggleSidebar(): void {

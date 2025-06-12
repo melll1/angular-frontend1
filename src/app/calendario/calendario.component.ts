@@ -81,9 +81,11 @@ export class CalendarioComponent implements OnInit {
 
     const token = localStorage.getItem('token') || '';
     const body = {
-  mascota_id: this.mascotaSeleccionada.id,
+   mascota_id: this.mascotaSeleccionada.id,
   dueno_id: this.mascotaSeleccionada.usuario?.id,
-  fecha_hora: fechaHoraCompleta, // ✅ Usa la fecha con hora completa
+  veterinario_id: this.mascotaSeleccionada.veterinario_asignado?.veterinario_id,
+
+  fecha_hora: fechaHoraCompleta,
   motivo: this.motivo
 };
 
