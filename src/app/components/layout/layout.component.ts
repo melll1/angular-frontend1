@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -27,10 +27,23 @@ import { NotificacionService } from '../../services/notificacion.service';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   sidebarAbierto = true;
   modoSidenav: 'over' | 'side' = 'side';
   notificacionesNoLeidas = 0;
+  rol: string = '';
+
+
+  ngOnInit(): void {
+  const roleData = localStorage.getItem('role');
+  if (roleData) {
+    this.rol = roleData;
+  }
+}
+
+mostrarMensajes(): boolean {
+  return this.rol === 'dueno' || this.rol === 'paseador';
+}
 
   constructor(private breakpointObserver: BreakpointObserver, private notificacionService: NotificacionService) {
     this.breakpointObserver.observe(['(max-width: 768px)']).subscribe(result => {
