@@ -55,18 +55,18 @@ export const appRoutes: Routes = [
         data: { roles: ['veterinario']}
        },
       { path: 'notificaciones', loadComponent: () => import('./components/notificaciones/notificaciones.component').then(m => m.NotificacionesComponent) },
-<<<<<<< Updated upstream
+
       { path: 'calendario', loadComponent: () => import('./calendario/calendario.component').then(m => m.CalendarioComponent) },
       { path: 'mensajeria/:mascotaId/:receptorId', loadComponent: () => import('./components/mensajeria/mensajeria.component').then(m => m.MensajeriaComponent) },
       { path: 'bandeja-mensajes', loadComponent: () => import('./components/bandeja-mensajes/bandeja-mensajes.component').then(m => m.BandejaMensajesComponent) },
 
-=======
+
       { path: 'calendario', loadComponent: () => import('./calendario/calendario.component').then(m => m.CalendarioComponent),
         canActivate: [AuthGuard],
         data: { roles: ['veterinario' , 'dueno' , 'paseador']}
        },
      
->>>>>>> Stashed changes
+
     ]
   }
 ];
