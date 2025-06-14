@@ -1,0 +1,11 @@
+.body{
+    background-image:url('/notfound.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;    
+    height: 100%;
+    filter:drop-shadow(
+        0 0 20px rgb(96, 104, 94)
+      );                
+    overflow: auto;
+}
