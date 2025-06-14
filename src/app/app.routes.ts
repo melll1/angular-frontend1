@@ -15,6 +15,7 @@ export const appRoutes: Routes = [
   { path: 'reset-password-form', component: ResetPasswordFormComponent },
   { path: 'notfound', component: NotfoundComponent},
   { path: 'restringido', component: RestringidoComponent},
+  
 
   {
     path: '',
@@ -65,8 +66,14 @@ export const appRoutes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: ['veterinario' , 'dueno' , 'paseador']}
        },
-     
 
-    ]
-  }
-];
+       {path: 'mensajeria', loadComponent: () => import('./components/mensajeria/mensajeria.component').then(m => m.MensajeriaComponent),}
+     
+       
+      ]
+      
+    },
+      { path: '**', component: NotfoundComponent },
+
+  ];
+

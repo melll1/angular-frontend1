@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { MensajesService } from '../../services/mensajes.service'; // Ajusta la ruta si es diferente
 
 @Component({
   selector: 'app-bandeja-mensajes',
@@ -20,65 +20,50 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./bandeja-mensajes.component.css']
 })
 export class BandejaMensajesComponent implements OnInit {
- mascotasSinChat: any[] = [];
+  mascotasSinChat: any[] = [];
   conversaciones: any[] = [];
-  
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private mensajesService: MensajesService,
+    private router: Router
+  ) {}
 
- 
+  ngOnInit(): void {
+    this.cargarConversaciones();
+    this.cargarMascotasSinChat();
+  }
 
-
-ngOnInit(): void {
-  this.cargarConversaciones();
-  this.cargarMascotasSinChat(); // 👈 añadimos esto
-}
-
-
-  getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`
+  cargarConversaciones(): void {
+    this.mensajesService.obtenerConversaciones().subscribe({
+      next: res => {
+        console.log('🟢 Conversaciones cargadas:', res);
+        this.conversaciones = res.map(c => ({
+          mascota_id: c.mascota.id,
+          mascota_nombre: c.mascota.nombre,
+          receptor_id: c.conversacion_con.id,
+          nombre_otro_usuario: c.conversacion_con.nombre,
+          ultimo_mensaje: c.ultimo_mensaje
+        }));
+      },
+      error: err => console.error('❌ Error al cargar conversaciones:', err)
     });
   }
 
- cargarConversaciones(): void {
-  this.http.get<any[]>('http://localhost:8000/api/mensajes/conversaciones', {
-    headers: this.getAuthHeaders()
-  }).subscribe({
-    next: res => {
-      this.conversaciones = res.map(c => ({
-        mascota_id: c.mascota.id,
-        mascota_nombre: c.mascota.nombre,
-        receptor_id: c.conversacion_con.id,
-        nombre_otro_usuario: c.conversacion_con.nombre,
-        ultimo_mensaje: c.ultimo_mensaje
-      }));
-    },
-    error: err => console.error('Error al cargar conversaciones:', err)
-  });
-}
-
+  cargarMascotasSinChat(): void {
+    this.mensajesService.obtenerMascotasSinChat().subscribe({
+      next: res => {
+        console.log('➡️ Mascotas sin chat desde el backend:', res);
+        this.mascotasSinChat = res;
+      },
+      error: err => console.error('❌ Error al cargar mascotas sin chat:', err)
+    });
+  }
 
   irAlChat(mascotaId: number, receptorId: number): void {
     this.router.navigate(['/mensajeria', mascotaId, receptorId]);
   }
 
- cargarMascotasSinChat(): void {
-  this.http.get<any[]>('http://localhost:8000/api/mensajes/mascotas-sin-chat', {
-    headers: this.getAuthHeaders()
-  }).subscribe({
-    next: res => {
-      console.log('➡️ Mascotas sin chat desde el backend:', res); // <-- agrega esto
-      this.mascotasSinChat = res;
-    },
-    error: err => console.error('❌ Error al cargar mascotas sin chat:', err)
-  });
-}
-
-
-iniciarChat(mascotaId: number, receptorId: number): void {
-  this.router.navigate(['/mensajeria', mascotaId, receptorId]);
-}
-
+  iniciarChat(mascotaId: number, receptorId: number): void {
+    this.router.navigate(['/mensajeria', mascotaId, receptorId]);
+  }
 }

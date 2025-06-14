@@ -1,19 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
-// ✅ Angular Material Modules
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { CommonModule } from '@angular/common';
-
+import { MensajeriaService } from '../../services/mensajeria.service';
 
 @Component({
   selector: 'app-mensajeria',
@@ -30,41 +24,43 @@ import { CommonModule } from '@angular/common';
   templateUrl: './mensajeria.component.html',
   styleUrls: ['./mensajeria.component.css']
 })
-
 export class MensajeriaComponent implements OnInit {
   @Input() mascotaId!: number;
   @Input() receptorId!: number;
 
   mensajes: any[] = [];
   nuevoMensaje: string = '';
-  apiUrl = 'http://localhost:8000/api';
+  usuarioActualId!: number;
 
-constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(
+    private mensajeriaService: MensajeriaService,
+    private route: ActivatedRoute
+  ) {}
 
- ngOnInit(): void {
-  this.route.params.subscribe(params => {
-    this.mascotaId = +params['mascotaId'];
-    this.receptorId = +params['receptorId'];
-    this.cargarMensajes();
-  });
-}
-  getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`
+  ngOnInit(): void {
+    this.usuarioActualId = Number(localStorage.getItem('user_id'));
+
+    this.route.params.subscribe(params => {
+      this.mascotaId = +params['mascotaId'];
+      this.receptorId = +params['receptorId'];
+      this.cargarMensajes();
     });
   }
 
   cargarMensajes(): void {
-    this.http.get<any[]>(`${this.apiUrl}/mensajes/${this.mascotaId}`, {
-      headers: this.getAuthHeaders()
-    }).subscribe({
+    this.mensajeriaService.obtenerMensajesPorMascota(this.mascotaId).subscribe({
       next: res => this.mensajes = res,
-      error: err => console.error('Error al cargar mensajes:', err)
+      error: err => console.error('❌ Error al cargar mensajes:', err)
     });
   }
 
   enviarMensaje(): void {
+    console.log('📦 Payload a enviar:', {
+  mascota_id: this.mascotaId,
+  receptor_id: this.receptorId,
+  contenido: this.nuevoMensaje.trim()
+});
+
     if (!this.nuevoMensaje.trim()) return;
 
     const payload = {
@@ -73,14 +69,12 @@ constructor(private http: HttpClient, private route: ActivatedRoute) {}
       contenido: this.nuevoMensaje.trim()
     };
 
-    this.http.post(`${this.apiUrl}/mensajes`, payload, {
-      headers: this.getAuthHeaders()
-    }).subscribe({
+    this.mensajeriaService.enviarMensaje(payload).subscribe({
       next: res => {
         this.mensajes.push(res);
         this.nuevoMensaje = '';
       },
-      error: err => console.error('Error al enviar mensaje:', err)
+      error: err => console.error('❌ Error al enviar mensaje:', err)
     });
   }
 }

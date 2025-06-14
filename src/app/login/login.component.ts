@@ -18,6 +18,7 @@ export class LoginComponent {
   errors: any = {};
   isVerifiedFromEmail = false;
 
+  
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
@@ -67,6 +68,8 @@ export class LoginComponent {
              // Guardar el token y el rol en localStorage
   localStorage.setItem('token', res.token);
   localStorage.setItem('role', res.user.role);
+  localStorage.setItem('user_id', res.user.id); // en login.component.ts
+
 
             // 🧠 Obtener el perfil del usuario (para saber su rol)
           this.authService.obtenerPerfil().subscribe({

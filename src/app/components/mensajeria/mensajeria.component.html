@@ -1,8 +1,9 @@
 <mat-card class="chat-card">
   <mat-card-content>
     <div class="mensajes">
-      <div *ngFor="let mensaje of mensajes" [ngClass]="mensaje.emisor_id === receptorId ? 'mensaje-propio' : 'mensaje-ajeno'">
-        <mat-chip color="primary" selected>
+      <div *ngFor="let mensaje of mensajes" 
+           [ngClass]="mensaje.emisor_id === usuarioActualId ? 'mensaje-propio' : 'mensaje-ajeno'">
+        <mat-chip [color]="mensaje.emisor_id === usuarioActualId ? 'primary' : 'accent'" selected>
           {{ mensaje.contenido }}
         </mat-chip>
         <div class="fecha">{{ mensaje.created_at | date:'short' }}</div>
