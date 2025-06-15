@@ -7,8 +7,10 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { AuthGuard } from './guards/auth.guard';
 import { RestringidoComponent } from './restringido/restringido.component';
 
+
+
 export const appRoutes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
@@ -58,8 +60,7 @@ export const appRoutes: Routes = [
       { path: 'notificaciones', loadComponent: () => import('./components/notificaciones/notificaciones.component').then(m => m.NotificacionesComponent) },
 
       { path: 'calendario', loadComponent: () => import('./calendario/calendario.component').then(m => m.CalendarioComponent) },
-      { path: 'mensajeria/:mascotaId/:receptorId', loadComponent: () => import('./components/mensajeria/mensajeria.component').then(m => m.MensajeriaComponent) },
-      { path: 'bandeja-mensajes', loadComponent: () => import('./components/bandeja-mensajes/bandeja-mensajes.component').then(m => m.BandejaMensajesComponent) },
+      
 
 
       { path: 'calendario', loadComponent: () => import('./calendario/calendario.component').then(m => m.CalendarioComponent),
@@ -67,13 +68,15 @@ export const appRoutes: Routes = [
         data: { roles: ['veterinario' , 'dueno' , 'paseador']}
        },
 
-       {path: 'mensajeria', loadComponent: () => import('./components/mensajeria/mensajeria.component').then(m => m.MensajeriaComponent),}
-     
+       
+ 
        
       ]
       
     },
       { path: '**', component: NotfoundComponent },
+    
+
 
   ];
 

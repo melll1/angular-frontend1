@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8000/api';
+  private currentUser: any = null;
 
   constructor(private http: HttpClient) {}
 
@@ -52,5 +53,21 @@ obtenerPerfil(): Observable<any> {
 
   return this.http.get('http://localhost:8000/api/user-profile', { headers });
 }
+
+// ✅ Getter público para acceder al usuario actual
+  getUsuarioActual(): any {
+    return this.currentUser;
+  }
+
+  // ✅ También mantenemos este getter de ID
+  getCurrentUserId(): number {
+    return this.currentUser?.id ?? 0;
+  }
+
+  // ✅ Podés usar esto para establecer el usuario después del login
+  setUsuarioActual(user: any): void {
+    this.currentUser = user;
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
 
 }
