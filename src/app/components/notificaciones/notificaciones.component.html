@@ -22,7 +22,7 @@
         <small class="date">📅 {{ notificacion.fecha_notificacion | date: 'short' }}</small>
 
         <!-- Botones para solicitud de cita -->
-        <div *ngIf="notificacion.tipo === 'solicitud-cita' && !notificacion.leido">
+        <div *ngIf="notificacion.tipo === 'Cita' && !notificacion.leido">
           <button class="btn btn-small green white-text"
                   (click)="responderCita(notificacion, 'aceptada')">
             ✅ Aceptar

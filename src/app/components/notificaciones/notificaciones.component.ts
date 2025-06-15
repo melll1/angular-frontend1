@@ -56,7 +56,14 @@ export class NotificacionesComponent implements OnInit {
 responderCita(notificacion: any, estado: 'aceptada' | 'rechazada'): void {
   if (!confirm(`¿Estás seguro de ${estado === 'aceptada' ? 'aceptar' : 'rechazar'} esta cita?`)) return;
 
-  this.notificacionService.responderCita(notificacion.mascota_id, estado, notificacion.id).subscribe({
+  const citaId = notificacion.cita_id; // 👈 Esto debe estar definido
+  if (!citaId) {
+    alert('❌ Error: cita_id no disponible en la notificación');
+    console.error('Notificación sin cita_id:', notificacion);
+    return;
+  }
+
+  this.notificacionService.responderCita(citaId, estado, notificacion.id).subscribe({
     next: () => {
       alert(`Cita ${estado === 'aceptada' ? 'aceptada' : 'rechazada'} correctamente`);
       this.cargarNotificaciones();
@@ -67,5 +74,7 @@ responderCita(notificacion: any, estado: 'aceptada' | 'rechazada'): void {
     }
   });
 }
+
+
 
 }
